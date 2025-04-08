@@ -7,15 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tiket extends Model
 {
-    use HasFactory
+    use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'priority_level',
+        'category',
+        'type_device',
+        'operation_system',
+        'software_or_apps',
+        'keluhan',
+        'step_taken',
+        'status_tiket',
+    ];
 
-    public function users{}
+    /**
+     * Define the relationship with the User model.
+     */
+    public function user()  // Corrected method name to 'user' for consistency
     {
         return $this->belongsTo(User::class, 'user_id');
-
     }
-
-   
 }
