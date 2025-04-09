@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,21 +10,30 @@ class Tiket extends Model
 
     protected $fillable = [
         'user_id',
+        'ticket_number',
+        'date',
+        'open_time',
+        'close_time',
         'priority_level',
         'category',
+        'description',
         'type_device',
         'operation_system',
-        'software_or_apps',
-        'keluhan',
+        'software_or_application',
+        'error_message',
         'step_taken',
         'status_tiket',
     ];
 
-    /**
-     * Define the relationship with the User model.
-     */
-    public function user()  // Corrected method name to 'user' for consistency
+    protected $casts = [
+        'date' => 'date',
+        'open_time' => 'datetime:H:i:s',
+        'close_time' => 'datetime:H:i:s',
+    ];
+
+    // Relationship: Tiket belongs to a user
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 }
