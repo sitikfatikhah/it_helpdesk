@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,17 +12,21 @@ return new class extends Migration
     {
         Schema::create('tikets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade'); // Corrected 'CASECADE' to 'cascade'
-            $table->string('ticket_number')->nullable();
-            $table->string('priority_level');
-            $table->string('category');
-            $table->string('type_device');
-            $table->string('operation_system');
-            $table->string('software_or_apps');
-            $table->text('keluhan'); // Changed to 'text' since complaints might be longer
-            $table->text('step_taken')->nullable(); // Changed to 'text' for longer text
-            $table->string('status_tiket');
-            $table->timestamps(); // Removed custom column name for created_at, 'timestamps' will automatically create 'created_at' and 'updated_at'
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('ticket_number')->unique();
+            $table->date('date');
+            $table->time('open_time');
+            $table->time('close_time');
+            $table->enum('priority_level', ['low', 'medium', 'high'])->default('low');
+            $table->enum('category', ['software', 'hardware', 'network', 'other'])->default('hardware');
+            $table->longText('description');
+            $table->enum('type_device', ['desktop', 'laptop', 'printer', 'other'])->default('printer');
+            $table->enum('operation_system', ['windows', 'macos', 'linux', 'other'])->default('windows');
+            $table->string('software_or_application');
+            $table->longText('error_message')->nullable();
+            $table->longText('step_taken')->nullable();
+            $table->enum('status_tiket', ['solved', 'callback', 'monitored', 'other'])->default('other');
+            $table->timestamps();
         });
     }
 
