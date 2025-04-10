@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tikets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade'); // Corrected 'CASECADE' to 'cascade'
+            $table->string('ticket_number')->nullable();
             $table->string('priority_level');
             $table->string('category');
             $table->string('type_device');

@@ -27,6 +27,7 @@ class User extends Authenticatable
         'level_user',
         'status',
         'password',
+        'ticket_number',
     ];
 
     /**

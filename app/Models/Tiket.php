@@ -11,6 +11,7 @@ class Tiket extends Model
 
     protected $fillable = [
         'user_id',
+        'ticket_number',
         'priority_level',
         'category',
         'type_device',
