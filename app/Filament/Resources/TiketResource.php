@@ -85,6 +85,7 @@ class TiketResource extends Resource
                 Forms\Components\ToggleButtons::make('status_tiket')
                     ->required()
                     ->options([
+                        'on_progress' => 'On Progress',
                         'solved' => 'Solved',
                         'callback' => 'Callback',
                         'monitored' => 'Monitored',
@@ -106,6 +107,12 @@ class TiketResource extends Resource
                         'medium' => 'warning',
                         'high' => 'success',
                     })
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('open_time')
+                    ->dateTime('H:i')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('close_time')
+                    ->dateTime('H:i')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category')
                     ->searchable(),

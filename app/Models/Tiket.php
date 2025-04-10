@@ -28,8 +28,8 @@ class Tiket extends Model
 
     protected $casts = [
         'date' => 'date',
-        'open_time' => 'datetime:H:i:s',
-        'close_time' => 'datetime:H:i:s',
+        'open_time' => 'datetime:H:i',
+        'close_time' => 'datetime:H:i',
     ];
 
     // Relationship: Tiket belongs to a user

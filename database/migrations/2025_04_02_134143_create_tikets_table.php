@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->string('software_or_application');
             $table->longText('error_message')->nullable();
             $table->longText('step_taken')->nullable();
-            $table->enum('status_tiket', ['solved', 'callback', 'monitored', 'other'])->default('other');
+            $table->enum('status_tiket', ['on_progress','solved', 'callback', 'monitored', 'other'])->default('on_progress');
             $table->timestamps();
         });
     }
