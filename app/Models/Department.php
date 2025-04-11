@@ -12,4 +12,12 @@ class Department extends Model
         'nama_department',
         'nama',
     ];
+
+    public function tikets()
+    {
+    return $this->hasMany(Tiket::class);
+    }
+
+
 }
+

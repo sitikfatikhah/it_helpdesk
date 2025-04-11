@@ -21,7 +21,6 @@ class User extends Authenticatable
         'nama_perusahaan',
         'nip',
         'name',
-        'jabatan',
         'departement',
         'email',
         'level_user',

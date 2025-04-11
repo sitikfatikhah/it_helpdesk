@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Tiket extends Model
 {
@@ -14,7 +16,6 @@ class Tiket extends Model
         'date',
         'open_time',
         'close_time',
-        'ticket_number',
         'priority_level',
         'category',
         'description',
@@ -23,7 +24,7 @@ class Tiket extends Model
         'software_or_application',
         'error_message',
         'step_taken',
-        'status_tiket',
+        'ticket_status',
     ];
 
     protected $casts = [
@@ -32,9 +33,32 @@ class Tiket extends Model
         'close_time' => 'datetime:H:i',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($ticket) {
+            $today = now()->format('Ymd'); // Format: 20250411
+
+            $countToday = DB::table('tikets')
+                ->whereDate('created_at', now()->toDateString())
+                ->count();
+
+            $sequence = str_pad($countToday + 1, 3, '0', STR_PAD_LEFT);
+
+            $ticket->ticket_number = 'TC-' . $today . '-' . $sequence;
+        });
+    }
+
     // Relationship: Tiket belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
 }

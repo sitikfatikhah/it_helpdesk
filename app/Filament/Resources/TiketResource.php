@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\DB; // ✅ Tambahkan ini
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,78 +23,108 @@ class TiketResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-ticket';
 
     public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'nip') // Tetap gunakan 'nip' sebagai value field
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nip} - {$record->name}")
-                    ->searchable(['name', 'email'])
-                    ->preload()
-                    ->required(),
-                Forms\Components\TextInput::make('ticket_number')
-                    ->required()
-                    ->unique()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('date')
-                    ->required(),
-                Forms\Components\TimePicker::make('open_time')
-                    ->required(),
-                Forms\Components\TimePicker::make('close_time')
-                    ->required(),
-                Forms\Components\ToggleButtons::make('priority_level')
-                    ->options([
-                        'low' => 'Low',
-                        'medium' => 'Medium',
-                        'high' => 'High',
-                    ])
-                    ->grouped()
-                    ->required(),
-                Forms\Components\ToggleButtons::make('category')
-                    ->options([
-                        'software' => 'Software',
-                        'hardware' => 'Hardware',
-                        'network' => 'Network',
-                        'other' => 'Other',
-                    ])
-                    ->grouped()
-                    ->required(),
-                Forms\Components\TextInput::make('description')
-                    ->required()
-                    ->maxLength(255),
+{
+    return $form
+        ->schema([
+            Forms\Components\Select::make('user_id')
+                ->relationship('user', 'nip')
+                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nip} - {$record->name}")
+                ->searchable(['name', 'email'])
+                ->preload()
+                ->required(),
+            Forms\Components\Select::make('department_id')
+                ->relationship('department', 'nama_department')
+                ->searchable()
+                ->preload()
+                ->required(),
+            Forms\Components\TextInput::make('ticket_number')
+                ->label('Ticket Number')
+                ->default(function () {
+                $yearSuffix = now()->format('y'); // Ambil 2 digit belakang tahun, misalnya: '25'
+        
+                $countThisYear = DB::table('tikets')
+                    ->whereYear('created_at', now()->year)
+                    ->count();
+        
+                $sequence = str_pad($countThisYear + 1, 3, '0', STR_PAD_LEFT);
+        
+                return 'TC-' . $yearSuffix . $sequence;
+            })
+                ->disabled()
+                ->dehydrated(false)
+                ->required()
+                ->maxLength(255),
+            Forms\Components\DatePicker::make('date')->required(),
+            Forms\Components\TimePicker::make('open_time')->required(),
+            Forms\Components\ToggleButtons::make('priority_level')
+                ->options([
+                    'low' => 'Low',
+                    'medium' => 'Medium',
+                    'high' => 'High',
+                ])
+                ->grouped()
+                ->required(),
+            Forms\Components\TimePicker::make('close_time')->required(),
+
+            
+
+            Forms\Components\ToggleButtons::make('category')
+                ->options([
+                    'software' => 'Software',
+                    'hardware' => 'Hardware',
+                    'network' => 'Network',
+                    'other' => 'Other',
+                ])
+                ->grouped()
+                ->required(),
+                Forms\Components\Textarea::make('description')
+                ->required()
+                ->columnSpanFull(),
                 Forms\Components\ToggleButtons::make('type_device')
-                    ->options([
-                        'desktop' => 'Desktop',
-                        'laptop' => 'Laptop',
-                        'printer' => 'Prnter',
-                        'other' => 'Other',
-                    ])
-                    ->required()
-                    ->grouped(),
-                Forms\Components\ToggleButtons::make('operation_system')
-                    ->required()
-                    ->options([
-                        'windows' => 'Windows',
-                        'macos' => 'MacOS',
-                        'linux' => 'linux',
-                        'other' => 'Other',
-                    ])
-                    ->grouped(),
-                Forms\Components\TextInput::make('software_or_application')->required()->maxLength(255),
-                Forms\Components\Textarea::make('error_message')->required()->columnSpanFull(),
-                Forms\Components\Textarea::make('step_taken')->columnSpanFull(),
-                Forms\Components\ToggleButtons::make('status_tiket')
-                    ->required()
-                    ->options([
-                        'on_progress' => 'On Progress',
-                        'solved' => 'Solved',
-                        'callback' => 'Callback',
-                        'monitored' => 'Monitored',
-                        'other' => 'Other',
-                    ])
-                    ->grouped(),
-            ]);
-    }
+                ->label('Device Type')
+                ->options([
+                    'desktop' => 'Desktop',
+                    'laptop' => 'Laptop',
+                    'printer' => 'Printer', // typo fixed
+                    'other' => 'Other',
+                ])
+                ->required()
+                ->grouped(),
+            
+            Forms\Components\ToggleButtons::make('operation_system')
+                ->required()
+                ->options([
+                    'windows' => 'Windows',
+                    'macos' => 'MacOS',
+                    'linux' => 'Linux',
+                    'other' => 'Other',
+                ])
+                ->grouped(),
+           
+            Forms\Components\TextInput::make('software_or_application')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\Textarea::make('error_message')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\Textarea::make('step_taken')
+                ->columnSpanFull(),
+
+            Forms\Components\ToggleButtons::make('ticket_status')
+                ->required()
+                ->options([
+                    'on_progress' => 'On Progress',
+                    'solved' => 'Solved',
+                    'callback' => 'Callback',
+                    'monitored' => 'Monitored',
+                    'other' => 'Other',
+                ])
+                ->grouped(),
+        ]);
+}
+
 
     public static function table(Table $table): Table
     {
@@ -122,7 +153,7 @@ class TiketResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('software_or_application')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status_tiket')
+                Tables\Columns\TextColumn::make('ticket_status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'solved' => 'gray',
@@ -147,7 +178,7 @@ class TiketResource extends Resource
                 Tables\Actions\Action::make('set_status')
                     ->label('Update Status')
                     ->form([
-                        ToggleButtons::make('status_tiket')
+                        ToggleButtons::make('ticket_status')
                             ->label('Ticket Status')
                             ->options([
                                 'solved' => 'Solved',
@@ -160,7 +191,7 @@ class TiketResource extends Resource
                     ])
                     ->action(function (array $data, Tiket $record): void {
                         $record->update([
-                            'status_tiket' => $data['status_tiket'],
+                            'ticket_status' => $data['ticket'],
                         ]);
                     })
                     ->requiresConfirmation()

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('nama_perusahaan');
             $table->string('nip')->unique(); // Changed to string to handle possible leading zeros
             $table->string('name');
-            $table->string('jabatan');
             $table->string('email')->unique();
             $table->string('level_user');
             $table->string('status');
@@ -51,8 +50,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+    Schema::table('users', function (Blueprint $table) {
+        $table->dropColumn('jabatan');
+    });
+
+    Schema::dropIfExists('password_reset_tokens');
+    Schema::dropIfExists('sessions');
+    Schema::dropIfExists('jabatan');
     }
+
 };
