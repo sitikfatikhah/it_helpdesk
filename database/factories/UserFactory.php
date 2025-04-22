@@ -24,7 +24,6 @@ class UserFactory extends Factory
             'nama_perusahaan' => $this->faker->company(),
             'nip' => $this->faker->unique()->numberBetween(100, 999), // NIK as numeric with leading zeros handled
             'name' => $this->faker->name(),
-            'jabatan' => $this->faker->jobTitle(),
             'email' => $this->faker->unique()->safeEmail(),
             'level_user' => $this->faker->randomElement(['admin', 'operator', 'superadmin']), // Random user levels
             'status' => $this->faker->randomElement(['active', 'inactive']),

@@ -51,12 +51,10 @@ return new class extends Migration
     public function down(): void
     {
     Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn('jabatan');
     });
 
     Schema::dropIfExists('password_reset_tokens');
     Schema::dropIfExists('sessions');
-    Schema::dropIfExists('jabatan');
     }
 
 };

@@ -18,15 +18,20 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'nama_perusahaan',
-        'nip',
-        'name',
-        'departement',
-        'email',
-        'level_user',
-        'status',
-        'password',
+        'user_id',
         'ticket_number',
+        'date',
+        'open_time',
+        'close_time',
+        'priority_level',
+        'category',
+        'description',
+        'type_device',
+        'operation_system',
+        'software_or_application',
+        'error_message',
+        'step_taken',
+        'ticket_status',
     ];
 
     /**
@@ -51,4 +56,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function tikets()
+{
+    return $this->hasMany(Post::class);
+}
+
 }

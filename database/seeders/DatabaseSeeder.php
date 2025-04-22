@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
             'nama_perusahaan' => 'CSA',
             'nip' => '001', // It's a string because NIK could have leading zeros
             'name' => 'Superadmin',
-            'jabatan' => 'IT',
             'email' => 'superadmin@csa.tes',
             'level_user' => 'superadmin',
             'status' => 'active',
@@ -33,7 +32,6 @@ class DatabaseSeeder extends Seeder
             'nama_perusahaan' => 'CSA',
             'nip' => '002', // It's a string because NIK could have leading zeros
             'name' => 'Administrator',
-            'jabatan' => 'IT',
             'email' => 'administrator@csa.tes',
             'level_user' => 'administrator',
             'status' => 'active',
@@ -44,7 +42,6 @@ class DatabaseSeeder extends Seeder
             'nama_perusahaan' => 'CSA',
             'nip' => '003', // It's a string because NIK could have leading zeros
             'name' => 'Operator',
-            'jabatan' => 'IT',
             'email' => 'operator@csa.tes',
             'level_user' => 'opertor',
             'status' => 'active',

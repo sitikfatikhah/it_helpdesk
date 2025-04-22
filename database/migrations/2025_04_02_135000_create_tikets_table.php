@@ -10,10 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        // Table: tikets
         Schema::create('tikets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('departments')->constrained()->onDelete('cascade'); // Relasi ke departments
+            $table->unsignedBigInteger('department_id');
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->string('ticket_number')->unique();
             $table->date('date');
             $table->time('open_time');
@@ -27,6 +29,15 @@ return new class extends Migration {
             $table->longText('error_message')->nullable();
             $table->longText('step_taken')->nullable();
             $table->enum('ticket_status', ['on_progress','solved', 'callback', 'monitored', 'other'])->default('on_progress');
+            $table->timestamps();         
+        });
+
+        // Table: posts
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->text('content');
             $table->timestamps();
         });
     }
@@ -36,6 +47,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        Schema::dropIfExists('posts');
         Schema::dropIfExists('tikets');
     }
 };

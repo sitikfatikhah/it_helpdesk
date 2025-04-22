@@ -156,6 +156,7 @@ class TiketResource extends Resource
                 Tables\Columns\TextColumn::make('ticket_status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
+                        'on_progress' => 'info',
                         'solved' => 'gray',
                         'callback' => 'warning',
                         'monitored' => 'success',
@@ -181,6 +182,7 @@ class TiketResource extends Resource
                         ToggleButtons::make('ticket_status')
                             ->label('Ticket Status')
                             ->options([
+                                'on_progress' => 'On progress',
                                 'solved' => 'Solved',
                                 'callback' => 'Callback',
                                 'monitored' => 'Monitored',
@@ -213,4 +215,16 @@ class TiketResource extends Resource
             'index' => Pages\ManageTikets::route('/'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+    return static::getModel()::count();
+}
+
+public static function getNavigationBadgeColor(): ?string
+{
+    return static::getModel()::count() > 10 ? 'warning' : 'primary';
+}
+
+
 }
