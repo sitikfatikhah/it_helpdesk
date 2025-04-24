@@ -50,7 +50,7 @@ class DepartmentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('nama'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
