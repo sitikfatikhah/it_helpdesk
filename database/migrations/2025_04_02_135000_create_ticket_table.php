@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        // Table: tikets
-        Schema::create('tikets', function (Blueprint $table) {
+        // Table: Ticket
+        Schema::create('ticket', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('department_id');
@@ -48,6 +48,6 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('posts');
-        Schema::dropIfExists('tikets');
+        Schema::dropIfExists('ticket');
     }
 };

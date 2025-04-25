@@ -13,9 +13,9 @@ class Department extends Model
         'nama',
     ];
 
-    public function tikets()
+    public function ticket()
     {
-    return $this->hasMany(Tiket::class);
+    return $this->hasMany(Ticket::class);
     }
 
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Tiket extends Model
+class Ticket extends Model
 {
     use HasFactory;
 
@@ -41,7 +41,7 @@ class Tiket extends Model
         static::creating(function ($ticket) {
             $today = now()->format('Ymd'); // Format: 20250411
 
-            $countToday = DB::table('tikets')
+            $countToday = DB::table('ticket')
                 ->whereDate('created_at', now()->toDateString())
                 ->count();
 
@@ -51,7 +51,7 @@ class Tiket extends Model
         });
     }
 
-    // Relationship: Tiket belongs to a user
+    // Relationship: Ticket belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);

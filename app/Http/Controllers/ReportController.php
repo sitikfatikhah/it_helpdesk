@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportsExport;
 
 class ReportController extends Controller
 {
@@ -66,4 +69,18 @@ class ReportController extends Controller
 
         return response()->json(['message' => 'Report deleted successfully']);
     }
+
+    public function exportPdf()
+    {
+    $reports = Report::with(['user', 'department'])->get();
+    $pdf = Pdf::loadView('exports.reports-pdf', compact('reports'));
+
+    return $pdf->download('reports.pdf')
+    ;}
+    public function exportExcel()
+    {
+    return Excel::download(new ReportsExport, 'reports.xlsx')
+    ;}
+
+
 }

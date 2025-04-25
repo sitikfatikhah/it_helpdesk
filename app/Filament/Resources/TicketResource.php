@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TiketResource\Pages;
-use App\Filament\Resources\TiketResource\RelationManagers;
-use App\Models\Tiket;
+use App\Filament\Resources\TicketResource\Pages;
+use App\Filament\Resources\TicketResource\RelationManagers;
+use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
@@ -14,11 +14,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use PHPUnit\Framework\Attributes\Ticket;
 
-class TiketResource extends Resource
+
+class TicketResource extends Resource
 {
-    protected static ?string $model = Tiket::class;
+    protected static ?string $model = Ticket::class;
     protected static ?string $navigationLabel = 'Ticket Supports';
     protected static ?string $navigationIcon = 'heroicon-s-ticket';
 
@@ -42,7 +42,7 @@ class TiketResource extends Resource
                 ->default(function () {
                 $yearSuffix = now()->format('y'); // Ambil 2 digit belakang tahun, misalnya: '25'
         
-                $countThisYear = DB::table('tikets')
+                $countThisYear = DB::table('Ticket')
                     ->whereYear('created_at', now()->year)
                     ->count();
         
@@ -191,7 +191,7 @@ class TiketResource extends Resource
                             ->grouped()
                             ->required(),
                     ])
-                    ->action(function (array $data, Tiket $record): void {
+                    ->action(function (array $data, Ticket $record): void {
                         $record->update([
                             'ticket_status' => $data['ticket'],
                         ]);
@@ -212,7 +212,7 @@ class TiketResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageTikets::route('/'),
+            'index' => Pages\ManageTicket::route('/'),
         ];
     }
 

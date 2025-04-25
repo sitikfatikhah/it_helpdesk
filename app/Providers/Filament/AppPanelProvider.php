@@ -39,7 +39,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->resources([
                 \App\Filament\Resources\DepartmentResource::class,
-                \App\Filament\Resources\TiketResource::class,
+                \App\Filament\Resources\TicketResource::class,
                 \App\Filament\Resources\UserResource::class, // ✅ dipindahkan ke sini
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
