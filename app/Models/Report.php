@@ -1,16 +1,43 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Models;
 
-use Filament\Pages\Page;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Report extends Page
+class Report extends Model
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    use HasFactory;
 
-    protected static string $view = 'filament.pages.report'; // Blade View
+    protected $table = 'report'; // karena nama tabel tidak jamak
 
-    protected static ?string $slug = 'report';
+    protected $fillable = [
+        'user_id',
+        'department_id',
+        'ticket_number',
+        'date',
+        'open_time',
+        'close_time',
+        'priority_level',
+        'category',
+        'description',
+        'type_device',
+        'operation_system',
+        'software_or_application',
+        'error_message',
+        'step_taken',
+        'ticket_status',
+    ];
 
-    protected static ?string $navigationLabel = 'Report';
+    // Relasi ke User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke Department
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

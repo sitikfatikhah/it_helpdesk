@@ -41,13 +41,13 @@ class TicketResource extends Resource
                 ->label('Ticket Number')
                 ->default(function () {
                 $yearSuffix = now()->format('y'); // Ambil 2 digit belakang tahun, misalnya: '25'
-        
-                $countThisYear = DB::table('Ticket')
+
+                $countThisYear = DB::table('ticket')
                     ->whereYear('created_at', now()->year)
                     ->count();
-        
+
                 $sequence = str_pad($countThisYear + 1, 3, '0', STR_PAD_LEFT);
-        
+
                 return 'TC-' . $yearSuffix . $sequence;
             })
                 ->disabled()
@@ -66,7 +66,7 @@ class TicketResource extends Resource
                 ->required(),
             Forms\Components\TimePicker::make('close_time')->required(),
 
-            
+
 
             Forms\Components\ToggleButtons::make('category')
                 ->options([
@@ -90,7 +90,7 @@ class TicketResource extends Resource
                 ])
                 ->required()
                 ->grouped(),
-            
+
             Forms\Components\ToggleButtons::make('operation_system')
                 ->required()
                 ->options([
@@ -100,7 +100,7 @@ class TicketResource extends Resource
                     'other' => 'Other',
                 ])
                 ->grouped(),
-           
+
             Forms\Components\TextInput::make('software_or_application')
                 ->required()
                 ->maxLength(255),

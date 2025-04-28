@@ -2,7 +2,7 @@
 
 namespace User\Seeders;
 
-use Illuminate\User\Seeder;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 
@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         // Menambahkan 10 data departemen secara acak
         foreach (range(1, 10) as $index) {
             DB::table('user')->insert([
-                'id' => $faker->word(), 
+                'id' => $faker->word(),
                 'nama_perusahaan' => $faker->word(),
                 'nip' => $faker->word(),
                 'name' => $faker->word(),
