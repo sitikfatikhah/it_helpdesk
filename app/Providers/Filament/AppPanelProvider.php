@@ -38,11 +38,6 @@ class AppPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class
             ])
-            ->resources([
-                \App\Filament\Resources\DepartmentResource::class,
-                \App\Filament\Resources\TicketResource::class,
-                \App\Filament\Resources\UserResource::class, // ✅ dipindahkan ke sini
-            ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,

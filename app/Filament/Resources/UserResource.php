@@ -17,13 +17,13 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'clarity-users-solid-badged';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_perusahaan')
+                Forms\Components\TextInput::make('company_name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('nip')
@@ -54,7 +54,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_perusahaan')
+                Tables\Columns\TextColumn::make('company_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nip')
                     ->searchable(),

@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         foreach (range(1, 10) as $index) {
             DB::table('user')->insert([
                 'id' => $faker->word(),
-                'nama_perusahaan' => $faker->word(),
+                'company_name' => $faker->word(),
                 'nip' => $faker->word(),
                 'name' => $faker->word(),
                 'email' => $faker->word(),

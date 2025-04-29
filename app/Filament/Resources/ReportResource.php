@@ -16,12 +16,14 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
 
 class ReportResource extends Resource
 {
     protected static ?string $model = Ticket::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'clarity-export-outline-badged';
+    protected static ?string $navigationLabel = 'Report';
 
     public static function form(Form $form): Form
     {
@@ -101,20 +103,43 @@ class ReportResource extends Resource
             ->filters([
                 Filter::make('created_at')
                     ->form([
-                        Grid::make(2)->schema([
+                        Grid::make([
+                            'default' => 1,
+                            'sm' => 1,
+                            'md' => 2,
+                            'lg' => 2,
+                            'xl' => 2,
+                            '2xl' => 2,
+                        ])
+                        ->schema([
                             DatePicker::make('created_from')->label('Dari Tanggal'),
-                            DatePicker::make('created_until')->label('Sampai Tanggal'),
-                        ]),
+                            DatePicker::make('created_until')->label('Sampai Tanggal')
+                        ])
+                        
                     ])
                     ->query(function ($query, array $data) {
                         return $query
                             ->when($data['created_from'], fn($q) => $q->whereDate('created_at', '>=', $data['created_from']))
                             ->when($data['created_until'], fn($q) => $q->whereDate('created_at', '<=', $data['created_until']));
                     }),
+                    SelectFilter::make('status')
+                        ->options([
+                            'on_progress' => 'On Progress',
+                            'solved' => 'Solved',
+                            'callback' => 'Callback',
+                            'monitored' => 'Monitored',
+                            'other' => 'Other',
+                        ]),
+                        SelectFilter::make('priority_level')
+                        ->options([
+                            'low' => 'Low',
+                            'medium' => 'Medium',
+                            'high' => 'High',
+                        ])
             ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(3)
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                //
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -21,7 +21,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'nama_perusahaan' => $this->faker->company(),
+            'company_name' => $this->faker->company(),
             'nip' => $this->faker->unique()->numberBetween(100, 999), // NIK as numeric with leading zeros handled
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),

@@ -17,16 +17,13 @@ class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
 
-    protected static ?string $navigationIcon = 'clarity-group-outline-badged';
+    protected static ?string $navigationIcon = 'heroicon-s-squares-plus';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_department')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('nama')
+                Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -36,9 +33,7 @@ class DepartmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_department')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nama')
+                Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -50,7 +45,7 @@ class DepartmentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('nama'),
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

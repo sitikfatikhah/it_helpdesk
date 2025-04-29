@@ -6,7 +6,7 @@ use App\Filament\Resources\TicketResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 
-class ManageTicket extends ManageRecords
+class ManageTickets extends ManageRecords
 {
     protected static string $resource = TicketResource::class;
 

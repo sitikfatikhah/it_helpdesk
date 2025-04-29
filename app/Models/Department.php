@@ -9,8 +9,7 @@ class Department extends Model
     
 
     protected $fillable = [
-        'nama_department',
-        'nama',
+        'name',
     ];
 
     public function ticket()

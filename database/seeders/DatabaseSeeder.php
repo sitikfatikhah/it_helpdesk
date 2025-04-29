@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
 
         // Create a superadmin user
         User::factory()->create([
-            'nama_perusahaan' => 'CSA',
+            'company_name' => 'CSA',
             'nip' => '001', // It's a string because NIK could have leading zeros
             'name' => 'Superadmin',
             'email' => 'superadmin@csa.tes',
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123456789'),
         ]);
         User::factory()->create([
-            'nama_perusahaan' => 'CSA',
+            'company_name' => 'CSA',
             'nip' => '002', // It's a string because NIK could have leading zeros
             'name' => 'Administrator',
             'email' => 'administrator@csa.tes',
@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123456789'),
         ]);
         User::factory()->create([
-            'nama_perusahaan' => 'CSA',
+            'company_name' => 'CSA',
             'nip' => '003', // It's a string because NIK could have leading zeros
             'name' => 'Operator',
             'email' => 'operator@csa.tes',

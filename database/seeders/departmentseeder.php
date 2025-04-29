@@ -16,8 +16,7 @@ class DepartmentSeeder extends Seeder
         // Menambahkan 10 data departemen secara acak
         foreach (range(1, 10) as $index) {
             DB::table('departments')->insert([
-                'nama_department' => $faker->word(), // Menghasilkan kata acak untuk nama departemen
-                'nama' => $faker->word(), // Menghasilkan kata acak untuk nama departemen (misal: HR, IT, Finance)
+                'name' => $faker->word(), // Menghasilkan kata acak untuk nama departemen (misal: HR, IT, Finance)
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
