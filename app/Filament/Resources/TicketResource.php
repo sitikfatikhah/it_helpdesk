@@ -20,6 +20,8 @@ class TicketResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
+    protected static ?string $navigationGroup = 'Master Ticket';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -172,4 +174,12 @@ class TicketResource extends Resource
             'index' => Pages\ManageTickets::route('/'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }

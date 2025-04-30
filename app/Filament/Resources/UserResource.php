@@ -19,6 +19,8 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'clarity-users-solid-badged';
 
+    protected static ?string $navigationGroup = 'Master Karyawan';
+
     public static function form(Form $form): Form
     {
         return $form

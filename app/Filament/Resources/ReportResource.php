@@ -18,12 +18,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
 
+
 class ReportResource extends Resource
 {
     protected static ?string $model = Ticket::class;
 
     protected static ?string $navigationIcon = 'clarity-export-outline-badged';
     protected static ?string $navigationLabel = 'Report';
+
+    protected static ?string $navigationGroup = 'Ticket Report';
 
     public static function form(Form $form): Form
     {
@@ -112,8 +115,8 @@ class ReportResource extends Resource
                             '2xl' => 2,
                         ])
                         ->schema([
-                            DatePicker::make('created_from')->label('Dari Tanggal'),
-                            DatePicker::make('created_until')->label('Sampai Tanggal')
+                            DatePicker::make('created_from')->label('From'),
+                            DatePicker::make('created_until')->label('To')
                         ])
                         
                     ])
@@ -130,14 +133,28 @@ class ReportResource extends Resource
                             'monitored' => 'Monitored',
                             'other' => 'Other',
                         ]),
-                        SelectFilter::make('priority_level')
+                    SelectFilter::make('operation_system')
+                        ->options([
+                            'windows' => 'Windows',
+                            'macos' => 'MacOS',
+                            'linux' => 'Linux',
+                            'other' => 'Other',
+                        ]),
+                    SelectFilter::make('type_device')
+                        ->options([
+                            'desktop' => 'Desktop',
+                            'laptop' => 'Laptop',
+                            'printer' => 'Printer',
+                            'other' => 'Other',
+                        ]),
+                    SelectFilter::make('priority_level')
                         ->options([
                             'low' => 'Low',
                             'medium' => 'Medium',
                             'high' => 'High',
                         ])
             ], layout: FiltersLayout::AboveContent)
-            ->filtersFormColumns(3)
+            ->filtersFormColumns(5)
             ->actions([
                 //
             ])
