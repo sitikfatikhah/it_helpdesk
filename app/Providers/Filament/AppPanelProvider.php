@@ -36,6 +36,7 @@ class AppPanelProvider extends PanelProvider
             'success' => Color::Emerald,
             'warning' => Color::Orange,
             ])
+            // ->viteTheme('resources/css/filament/app/theme.css')
             ->sidebarCollapsibleOnDesktop()
             ->maxContentWidth(MaxWidth::Full)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

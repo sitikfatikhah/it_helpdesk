@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+// use Filament\Support\Assets\Css;
+// use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -22,7 +24,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+
+        ;
+        
+        // ...
+        }
     }
-
-
-}
+    
+    
