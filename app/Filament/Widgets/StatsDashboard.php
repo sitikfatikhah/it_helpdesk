@@ -15,18 +15,41 @@ class StatsDashboard extends BaseWidget
     protected function getStats(): array
     {
         $countTicket = Ticket::count();
-        $countTicketStatus = DB::Table('report')->count();
+        
+        //count by status
+        $countTicketStatus = DB::Table('Ticket')->count();
 
-        $onProgressCount = DB::table('report')->where('ticket_status', 'on_progress')->count();
-        $solvedCount = DB::table('report')->where('ticket_status', 'solved')->count();
-        $callbackCount = DB::table('report')->where('ticket_status', 'callback')->count();
+        $countonProgress = DB::table('Ticket')
+            ->where('ticket_status','on_progress')
+            ->count();
+        $countsolved = DB::table('Ticket')
+            ->where('ticket_status', 'solved')
+            ->count();
+        $countcallback = DB::table('Ticket')
+            ->where('ticket_status', 'callback')
+            ->count();
+
         return [
             Stat::make(label: 'Total Ticket', value: $countTicket  . ' Ticket'),
-            Stat::make(label: 'On Progress', value: $onProgressCount  . ' ')
-            ->extraAttributes([
-                'class' => 'bg-yellow-100 text-yellow-800 border-2 border-yellow-300 rounded-ticket-style shadow-md px-6 py-4 font-semibold',]),
-            Stat::make(label: 'Solved', value: $solvedCount  . ' '),
-            Stat::make(label: 'Total Ticket', value: $callbackCount  . ' '),
+
+            Stat::make(label: 'On progress', value: $countonProgress)
+                ->description('Tickets on progress')
+                ->icon('heroicon-o-clock')
+                ->color('success'),
+            Stat::make(label: 'Solved', value: $countsolved)
+                ->description('Tickets solved')
+                ->icon('heroicon-o-check')
+                ->color('info'),
+            Stat::make(label: 'Callback', value: $countcallback)
+                ->description('Tickets callback')
+                ->icon('heroicon-o-arrow-path')
+                ->color('warning'),
+
+            // Stat::make(label: 'Solved', value: $solvedCount  . ' ')
+                
+            //     ->extraAttributes([
+            //         'class' => 'border-yellow-300 border-2 bg-yellow-50 text-yellow-900 font-semibold',
+            //     ]),
 
         ];
     }
