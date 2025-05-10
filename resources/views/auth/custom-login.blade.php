@@ -75,11 +75,18 @@ rel="stylesheet">
                 <h1>
                     Cannot find an answer ? Submit your ticket
                 </h1>
-                <h2>
-                    <button>
-                        Submit Ticket
-                    </button>
-                </h2>
+                
+                
+                        
+                 <form action="{{url( '/submit-ticket') }}" method="POST" class="mt-4">
+
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+                                Submit Ticket
+                            </button>
+                </form>
+                    
+            
+            
             <div>
            </div>
         <section>
