@@ -78,12 +78,9 @@ rel="stylesheet">
                 
                 
                         
-                 <form action="{{url( '/submit-ticket') }}" method="POST" class="mt-4">
-
-                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
-                                Submit Ticket
-                            </button>
-                </form>
+                 <a href="http://127.0.0.1:8000/app/login" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
+                    Submit Ticket
+                </a>
                     
             
             

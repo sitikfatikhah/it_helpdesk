@@ -5,9 +5,9 @@ use App\Http\Controllers\CustomLoginController;
 use Illuminate\Http\Request;
 
 
-// Route::get('/', function () {
-//     return redirect('/app');
-// });
+Route::get('/', function () {
+    return redirect('/app');
+});
 
 Route::get('/reports/export/pdf', [ReportController::class, 'exportPdf'])->name('reports.export.pdf');
 Route::get('/reports/export/excel', [ReportController::class, 'exportExcel'])->name('reports.export.excel');
