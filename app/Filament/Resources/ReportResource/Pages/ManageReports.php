@@ -10,10 +10,10 @@ class ManageReports extends ManageRecords
 {
     protected static string $resource = ReportResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         Actions\CreateAction::make(),
+    //     ];
+    // }
 }
