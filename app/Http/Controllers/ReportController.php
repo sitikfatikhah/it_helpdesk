@@ -82,5 +82,11 @@ class ReportController extends Controller
     return Excel::download(new ReportsExport, 'reports.xlsx')
     ;}
 
+    public function view_pdf()
+    {
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML('<h1>Hello world!</h1>');
+        $mpdf->Output();
+    }
 
 }

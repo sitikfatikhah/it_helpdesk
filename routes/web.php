@@ -19,3 +19,5 @@ Route::post('/submit-ticket', function (Request $request) {
     return redirect('/app'); // redirect ke dashboard Laravel
 });
 
+Route::get('report/view/pdf', [ReportController::class, 'view_pdf']);
+
