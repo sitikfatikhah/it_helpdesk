@@ -53,7 +53,7 @@ rel="stylesheet">
         </nav>
 
          <!-- Hero Section -->
-    <section class="container mx-auto px-2 py-12 grid md:grid-cols-2 gap-12 items-center">
+    <!-- <section class="container mx-auto px-2 py-12 grid md:grid-cols-2 gap-12 items-center">
         <!-- Left Content -->
         <div>
             <h1 class="text-[#364DFA] text-3xl font-bold mb-4">WELCOME TO IT HELPDESK</h1>
@@ -139,4 +139,4 @@ rel="stylesheet">
     </footer>
 
     </body>
-</html>
+</html> -->

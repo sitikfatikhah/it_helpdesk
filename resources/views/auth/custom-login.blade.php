@@ -30,9 +30,9 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="container mx-auto px-6 py-10 grid md:grid-cols-2 gap-10 items-center">
+    <section class="container mx-auto px-24 py-10  grid md:grid-cols-2 gap-8 ">
         <!-- Left Content -->
-        <div class="space-y-6">
+        <div class="space-y-6 py-16">
             <h1 class="text-3xl font-bold text-[#364DFA] uppercase">Welcome to IT Helpdesk</h1>
             <p class="text-gray-600 text-sm">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt <br> ut labore et dolore magna aliqua.
