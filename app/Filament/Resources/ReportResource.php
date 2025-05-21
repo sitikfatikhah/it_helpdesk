@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ReportResource\Pages;
 use App\Filament\Resources\ReportResource\RelationManagers;
 use App\Models\Ticket;
+use App\Models\Report;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\Action;
 
 
 
@@ -158,13 +160,20 @@ class ReportResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->filtersFormColumns(5)
             ->actions([
-                //
+                // Tables\Actions\EditAction::make(),
+                Action::make('download')
+                    ->url(fn(Ticket $record)=> route('download.pdf', $record))
+                    ->openUrlInNewTab()
+                    // ->icon('heroicon-o-arrow-down-tray')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+                
+                
+                
+                    ]);
     }
 
     public static function getPages(): array
