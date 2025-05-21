@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^1.1",
         "mpdf/mpdf": "^6.1",
+        "phpoffice/phpspreadsheet": "^4.2",
         "secondnetwork/blade-tabler-icons": "^3.31"
     },
     "require-dev": {
