@@ -8,11 +8,14 @@ use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use App\Filament\Imports\TicketImporter;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
+
 
 class TicketResource extends Resource
 {
@@ -165,7 +168,12 @@ class TicketResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(TicketImporter::class)
             ]);
+
     }
 
     public static function getPages(): array
@@ -176,10 +184,9 @@ class TicketResource extends Resource
     }
 
     public static function getNavigationBadge(): ?string
-{
-    return static::getModel()::count();
-}
-
+    {
+        return static::getModel()::count();
+    }
 
 
 }

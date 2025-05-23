@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-// use Filament\Support\Assets\Css;
-// use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin;
+use Illuminate\Contracts\Auth\Authenticatable;
+
 
 
 class AppServiceProvider extends ServiceProvider
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(Authenticatable::class, Admin::class);
     }
 
     /**
