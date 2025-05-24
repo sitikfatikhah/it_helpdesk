@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Imports\UserImporter;
+use Filament\Tables\Actions\ImportAction;
 
 class UserResource extends Resource
 {
@@ -91,7 +93,11 @@ class UserResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->headerActions([
+            ImportAction::make()
+                ->importer(UserImporter::class)
+        ]);
     }
 
     public static function getPages(): array
@@ -100,4 +106,6 @@ class UserResource extends Resource
             'index' => Pages\ManageUsers::route('/'),
         ];
     }
+
+    
 }
