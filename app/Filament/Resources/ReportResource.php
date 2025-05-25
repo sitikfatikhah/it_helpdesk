@@ -17,6 +17,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
+use App\Filament\Exports\ReportExporter;
+use Filament\Tables\Actions\ExportAction;
+// use Filament\Actions\Exports\Enums\ExportFormat;
 
 
 class ReportResource extends Resource
@@ -162,6 +165,11 @@ class ReportResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+            ExportAction::make()
+                ->exporter(ReportExporter::class)
+                ->csvDelimiter(';'),
             ]);
     }
 
@@ -171,4 +179,11 @@ class ReportResource extends Resource
             'index' => Pages\ManageReports::route('/'),
         ];
     }
+
+    // public function getFormats(): array
+    // {
+    //     return [
+    //         ExportFormat::Csv,
+    //     ];
+    // }
 }

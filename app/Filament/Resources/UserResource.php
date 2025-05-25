@@ -12,6 +12,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Imports\UserImporter;
+use Filament\Tables\Actions\ImportAction;
+use App\Filament\Exports\UserExporter;
+use Filament\Tables\Actions\ExportAction;
+
 
 class UserResource extends Resource
 {
@@ -91,6 +96,14 @@ class UserResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+            ImportAction::make()
+                ->importer(UserImporter::class)
+                ->csvDelimiter(';'),
+          ExportAction::make()
+                ->exporter(UserExporter::class)
+                ->csvDelimiter(';'),
             ]);
     }
 

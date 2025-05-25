@@ -13,6 +13,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
+use App\Filament\Imports\TicketImporter;
+use Filament\Tables\Actions\ImportAction;
+use App\Filament\Exports\TicketExporter;
+use Filament\Tables\Actions\ExportAction;
+
 
 class TicketResource extends Resource
 {
@@ -165,6 +170,14 @@ class TicketResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+            ImportAction::make()
+                ->importer(TicketImporter::class)
+                ->csvDelimiter(';'),
+            ExportAction::make()
+                ->exporter(TicketExporter::class)
+                ->csvDelimiter(';'),
             ]);
     }
 
