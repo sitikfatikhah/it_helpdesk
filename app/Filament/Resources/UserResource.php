@@ -16,6 +16,7 @@ use App\Filament\Imports\UserImporter;
 use Filament\Tables\Actions\ImportAction;
 use App\Filament\Exports\UserExporter;
 use Filament\Tables\Actions\ExportAction;
+use Illuminate\Support\Str;
 
 
 class UserResource extends Resource
@@ -54,13 +55,26 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->maxLength(255),
-            ]);
+                // Using Select Component
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
+                
+                // Using CheckboxList Component
+                Forms\Components\CheckboxList::make('roles')
+                    ->relationship('roles', 'name')
+                    ->searchable(),
+                            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('company_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nip')
@@ -101,7 +115,7 @@ class UserResource extends Resource
             ImportAction::make()
                 ->importer(UserImporter::class)
                 ->csvDelimiter(';'),
-          ExportAction::make()
+            ExportAction::make()
                 ->exporter(UserExporter::class)
                 ->csvDelimiter(';'),
             ]);
@@ -112,5 +126,14 @@ class UserResource extends Resource
         return [
             'index' => Pages\ManageUsers::route('/'),
         ];
+    }
+    public static function getPermissionPrefix(): string
+    {
+        return Str::of($resource)
+        ->afterLast('Resources\\')
+        ->before('Resource')
+        ->replace('\\', '')
+        ->snake()
+        ->replace('_', '::');
     }
 }
