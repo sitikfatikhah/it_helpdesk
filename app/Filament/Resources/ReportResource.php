@@ -48,8 +48,8 @@ class ReportResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('open_time')
                     ->required(),
-                Forms\Components\TextInput::make('close_time')
-                    ->required(),
+                // Forms\Components\TextInput::make('close_time')
+                //     ->required(),
                 Forms\Components\TextInput::make('priority_level')
                     ->required(),
                 Forms\Components\TextInput::make('category')
@@ -89,7 +89,7 @@ class ReportResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('open_time'),
-                Tables\Columns\TextColumn::make('close_time'),
+                // Tables\Columns\TextColumn::make('close_time'),
                 Tables\Columns\TextColumn::make('priority_level'),
                 Tables\Columns\TextColumn::make('category'),
                 Tables\Columns\TextColumn::make('type_device'),

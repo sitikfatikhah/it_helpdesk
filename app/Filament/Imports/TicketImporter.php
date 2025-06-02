@@ -37,10 +37,10 @@ class TicketImporter extends Importer
                 ->label('Open Time')
                 ->requiredMapping()
                 ->rules(['required']),
-            ImportColumn::make('close_time')
-                ->label('Close Time')
-                ->requiredMapping()
-                ->rules(['required']),
+            // ImportColumn::make('close_time')
+            //     ->label('Close Time')
+            //     ->requiredMapping()
+            //     ->rules(['required']),
             ImportColumn::make('priority_level')
                 ->label('Priority Level')
                 ->requiredMapping()

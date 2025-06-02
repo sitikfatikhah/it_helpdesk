@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('ticket_number')->unique();
             $table->date('date');
             $table->time('open_time');
-            $table->time('close_time');
+            // $table->time('close_time');
             $table->enum('priority_level', ['low', 'medium', 'high'])->default('low');
             $table->enum('category', ['software', 'hardware', 'network', 'other'])->default('hardware');
             $table->longText('description');

@@ -17,6 +17,14 @@ use App\Filament\Imports\TicketImporter;
 use Filament\Tables\Actions\ImportAction;
 use App\Filament\Exports\TicketExporter;
 use Filament\Tables\Actions\ExportAction;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Support\Carbon;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+
 
 
 class TicketResource extends Resource
@@ -39,12 +47,13 @@ class TicketResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('department_id')
                     ->relationship('department', 'name')
-                    ->searchable()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Departement')
-                            ->required(),
-                    ])
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->name}")
+                    ->searchable('id', 'name')
+                    // ->createOptionForm([
+                    //     Forms\Components\TextInput::make('name')
+                    //         ->label('Departement')
+                    //         ->required(),
+                    // ])
                     ->preload()
                     ->required(),
                 Forms\Components\TextInput::make('ticket_number')
@@ -63,17 +72,18 @@ class TicketResource extends Resource
                     ->dehydrated(false)
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('date')->required(),
-                Forms\Components\TimePicker::make('open_time')->required(),
-                Forms\Components\ToggleButtons::make('priority_level')
-                    ->options([
-                        'low' => 'Low',
-                        'medium' => 'Medium',
-                        'high' => 'High',
-                    ])
-                    ->grouped()
+                Forms\Components\DatePicker::make('date')
+                    ->default(today()) // isi otomatis tanggal hari ini
                     ->required(),
-                Forms\Components\TimePicker::make('close_time')->required(),
+                Forms\Components\TimePicker::make('open_time')
+                    ->default(now()->format('H:i')) // waktu saat ini
+                    ->reactive() // supaya bisa trigger perubahan saat open_time diubah
+                    ->required(),
+                
+                // Forms\Components\TimePicker::make('close_time')
+                //     ->default(fn () => now()->addHours(8)->format('H:i')) // default 8 jam setelah open_time
+                //     ->required()
+                //     ->disabled(), // agar tidak bisa diubah manual
                 Forms\Components\ToggleButtons::make('category')
                     ->options([
                         'software' => 'Software',
@@ -83,9 +93,7 @@ class TicketResource extends Resource
                     ])
                     ->grouped()
                     ->required(),
-                    Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
+                    
                     Forms\Components\ToggleButtons::make('type_device')
                     ->label('Device Type')
                     ->options([
@@ -114,9 +122,20 @@ class TicketResource extends Resource
                 Forms\Components\TextInput::make('error_message')
                     ->required()
                     ->maxLength(255),
-
+                Forms\Components\Textarea::make('description')
+                    ->required()
+                    ->columnSpanFull(),
                 Forms\Components\Textarea::make('step_taken')
                     ->columnSpanFull(),
+
+                Forms\Components\ToggleButtons::make('priority_level')
+                    ->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                    ])
+                    ->grouped()
+                    ->required(),
 
                 Forms\Components\ToggleButtons::make('ticket_status')
                     ->required()
@@ -142,7 +161,7 @@ class TicketResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('open_time'),
-                Tables\Columns\TextColumn::make('close_time'),
+                // Tables\Columns\TextColumn::make('close_time'),
                 Tables\Columns\TextColumn::make('priority_level'),
                 Tables\Columns\TextColumn::make('category'),
                 Tables\Columns\TextColumn::make('type_device'),
@@ -158,13 +177,28 @@ class TicketResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options([
+                    'waiting' => 'Waiting',
+                    'on_progress' => 'On Progress',
+                    'confirmed' => 'Confirmed',
+                    'solved' => 'Solved',
+                    'closed' => 'Closed',
+                    ])
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
+            ])
+            ->button()
+            ->label('Actions')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

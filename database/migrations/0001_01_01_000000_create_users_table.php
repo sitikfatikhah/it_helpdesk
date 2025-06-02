@@ -18,9 +18,10 @@ return new class extends Migration
             $table->string('nip')->unique(); // Changed to string to handle possible leading zeros
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('department');
             $table->string('level_user');
             $table->string('status');
-            $table->timestamp('email_verified_at')->nullable();
+            // $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken(); // Added remember_token as per Laravel's default
             $table->timestamps();

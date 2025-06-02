@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'superadmin@csa.tes',
             'level_user' => 'superadmin',
             'status' => 'active',
-            'email_verified_at' => Carbon::now(),
+            // 'email_verified_at' => Carbon::now(),
             'password' => Hash::make('123456789'),
         ]);
         User::factory()->create([
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'administrator@csa.tes',
             'level_user' => 'administrator',
             'status' => 'active',
-            'email_verified_at' => Carbon::now(),
+            // 'email_verified_at' => Carbon::now(),
             'password' => Hash::make('123456789'),
         ]);
         User::factory()->create([
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'operator@csa.tes',
             'level_user' => 'opertor',
             'status' => 'active',
-            'email_verified_at' => Carbon::now(),
+            // 'email_verified_at' => Carbon::now(),
             'password' => Hash::make('123456789'),
         ]);
     }

@@ -38,9 +38,9 @@ class UserImporter extends Importer
                 ->label('Status')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
-            ImportColumn::make('email_verified_at')
-                ->label('Email verified at')
-                ->rules(['email', 'datetime']),
+            // ImportColumn::make('email_verified_at')
+            //     ->label('Email verified at')
+            //     ->rules(['email', 'datetime']),
             ImportColumn::make('password')
                 ->label('Password')
                 ->requiredMapping()

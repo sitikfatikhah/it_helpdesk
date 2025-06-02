@@ -19,7 +19,7 @@ class ReportFactory extends Factory
             'ticket_number' => 'TCK-' . $this->faker->unique()->numerify('###'),
             'date' => $this->faker->date(),
             'open_time' => $this->faker->time(),
-            'close_time' => $this->faker->time(),
+            // 'close_time' => $this->faker->time(),
             'priority_level' => $this->faker->randomElement(['low', 'medium', 'high']),
             'category' => $this->faker->word(),
             'description' => $this->faker->paragraph(),

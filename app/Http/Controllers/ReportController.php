@@ -31,7 +31,7 @@ class ReportController extends Controller
             'ticket_number' => 'required|unique:reports,ticket_number',
             'date' => 'required|date',
             'open_time' => 'nullable',
-            'close_time' => 'nullable',
+            // 'close_time' => 'nullable',
             'priority_level' => 'required|in:low,medium,high',
             'category' => 'required',
             'description' => 'required',

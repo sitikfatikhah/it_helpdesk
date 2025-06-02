@@ -21,9 +21,10 @@ class UserSeeder extends Seeder
                 'nip' => $faker->word(),
                 'name' => $faker->word(),
                 'email' => $faker->word(),
+                'department' => $faker->word(),
                 'level_user' => $faker->word(),
                 'status' => $faker->word(),
-                'email_verified_at' => $faker->word(),
+                // 'email_verified_at' => $faker->word(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

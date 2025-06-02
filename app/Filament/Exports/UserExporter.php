@@ -28,8 +28,8 @@ class UserExporter extends Exporter
                 ->label('Level User'),
             ExportColumn::make('status')
                 ->label('Status'),
-            ExportColumn::make('email_verified_at')
-                ->label('Email verified at'),
+            // ExportColumn::make('email_verified_at')
+            //     ->label('Email verified at'),
             ExportColumn::make('created_at')
                 ->label('Created at'),
             ExportColumn::make('updated_at')

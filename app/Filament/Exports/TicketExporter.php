@@ -21,7 +21,7 @@ class TicketExporter extends Exporter
             ExportColumn::make('ticket_number'),
             ExportColumn::make('date'),
             ExportColumn::make('open_time'),
-            ExportColumn::make('close_time'),
+            // ExportColumn::make('close_time'),
             ExportColumn::make('priority_level'),
             ExportColumn::make('category'),
             ExportColumn::make('description'),

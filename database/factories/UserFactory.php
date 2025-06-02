@@ -25,9 +25,10 @@ class UserFactory extends Factory
             'nip' => $this->faker->unique()->numberBetween(100, 999), // NIK as numeric with leading zeros handled
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
+            'department' => $this->faker->randomElement(['IT', 'HR', 'DEVELOPMENT', 'MARKETING', 'DIRECT SELLING']),
             'level_user' => $this->faker->randomElement(['admin', 'operator', 'superadmin']), // Random user levels
             'status' => $this->faker->randomElement(['active', 'inactive']),
-            'email_verified_at' => Carbon::now(),
+            // 'email_verified_at' => Carbon::now(),
             'password' => Hash::make('123456789'),
         ];
     }

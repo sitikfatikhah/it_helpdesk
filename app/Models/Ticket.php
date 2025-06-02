@@ -18,7 +18,7 @@ class Ticket extends Model
         'ticket_number',
         'date',
         'open_time',
-        'close_time',
+        // 'close_time',
         'priority_level',
         'category',
         'description',
@@ -33,7 +33,7 @@ class Ticket extends Model
     protected $casts = [
         'date' => 'date',
         'open_time' => 'datetime:H:i',
-        'close_time' => 'datetime:H:i',
+        // 'close_time' => 'datetime:H:i',
     ];
 
     protected static function boot()
