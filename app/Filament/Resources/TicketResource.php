@@ -22,8 +22,12 @@ use Illuminate\Support\Carbon;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
+use App\Models\Post;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\RichEditor;
 
 
 
@@ -151,69 +155,96 @@ class TicketResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('user.name'),
-                Tables\Columns\TextColumn::make('ticket_number')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('date')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('open_time'),
-                // Tables\Columns\TextColumn::make('close_time'),
-                Tables\Columns\TextColumn::make('priority_level'),
-                Tables\Columns\TextColumn::make('category'),
-                Tables\Columns\TextColumn::make('type_device'),
-                Tables\Columns\TextColumn::make('operation_system'),
-                Tables\Columns\TextColumn::make('software_or_application')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('ticket_status'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\SelectColumn::make('status')
-                    ->options([
-                    'waiting' => 'Waiting',
-                    'on_progress' => 'On Progress',
-                    'confirmed' => 'Confirmed',
-                    'solved' => 'Solved',
-                    'closed' => 'Closed',
-                    ])
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                ActionGroup::make([
+{
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('user.name'),
+            Tables\Columns\TextColumn::make('ticket_number')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('date')
+                ->date()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('open_time'),
+            Tables\Columns\TextColumn::make('priority_level'),
+            Tables\Columns\TextColumn::make('category'),
+            Tables\Columns\TextColumn::make('type_device'),
+            Tables\Columns\TextColumn::make('operation_system'),
+            Tables\Columns\TextColumn::make('software_or_application')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('ticket_status')
+                ->badge('danger', 'gray', 'info', 'primary', 'success', 'warning'),
+            Tables\Columns\TextColumn::make('created_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('updated_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            // Tables\Columns\SelectColumn::make('status')
+            //     ->options([
+            //         'waiting' => 'Waiting',
+            //         'on_progress' => 'On Progress',
+            //         'confirmed' => 'Confirmed',
+            //         'solved' => 'Solved',
+            //         'closed' => 'Closed',
+            //     ])
+                // ->sortable()
+                // ->toggleable(isToggledHiddenByDefault: true),
+        ])
+        ->filters([
+            //
+        ])
+        ->actions([
+            
+            // ✅ Custom Action to update ticket_status
+            Action::make('updateStatus')
+                ->label('Update Status')
+                ->form([
+                    Select::make('ticket_status')
+                        ->label('Status')
+                        ->options([
+                            'on_progress' => 'On Progress',
+                            'solved' => 'Solved',
+                            'callback' => 'Callback',
+                            'monitored' => 'Monitored',
+                            'other' => 'Other',
+                        ])
+                        ->required(),
+                    RichEditor::make('content'),
+                ])
+                ->action(function (array $data, Ticket $record): void {
+                    $record->ticket_status = $data['ticket_status'];
+                    $record->save();
+                })
+                ->modalHeading('Update Ticket Status')
+                ->icon('heroicon-m-arrow-path'),
+            
+            ActionGroup::make([
                 ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->button()
-            ->label('Actions')
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->headerActions([
+                ->button()
+                ->label('Actions'),
+            
+            
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ])
+        ->headerActions([
             ImportAction::make()
                 ->importer(TicketImporter::class)
                 ->csvDelimiter(';'),
             ExportAction::make()
                 ->exporter(TicketExporter::class)
                 ->csvDelimiter(';'),
-            ]);
-    }
+        ]);
+}
+
 
     public static function getPages(): array
     {

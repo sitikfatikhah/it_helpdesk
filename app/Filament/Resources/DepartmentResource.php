@@ -21,22 +21,33 @@ class DepartmentResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Karyawan';
 
-
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+    return $form
+        ->schema([
+            Forms\Components\TextInput::make('name')
+                ->label('Nama Departemen')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\Select::make('user_id')
+                ->label('Manager')
+                ->relationship('user', 'nip')
+                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nip} - {$record->name}")
+                ->searchable()
+                ->preload()
+                ->required(),
+        ]);
     }
+
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
