@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    {{-- <link rel="stylesheet"  href="{{ ('css/app.css') }}"> --}}
+    @vite('resources/css/app.css')
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -15,22 +17,59 @@
     </style>
      <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </head>
+
 <body class="bg-[#F1F4F5]">
 
     <!-- Navbar -->
-    <header class="container mx-auto flex items-center justify-between px-6 py-4">
-        <div class="text-gray-400 text-sm"></div> <!-- your logo here-->
-        <nav class="flex items-center gap-6 text-sm text-gray-700">
-            <a href="#">Home</a>
-            <a href="#">Items</a>
-            <a href="#">Knowledge Base</a>
-            <a href="#">Pages</a>
-            <a href="#" class="text-2xl">⚙️</a>
-        </nav>
+    <header class="fixed px-24 top-0 left-0 w-full flex items-center z-10">
+        <div class="container">
+            <div class="flex items-center justify between relative">
+                <div class="px-4">
+                    <a href="home" class="space-y-6 font-bold text-lg text-primary block py-6">
+                        IT Helpdesk
+                    </a>
+                </div>
+                <div class="flex flex-row justify-between items-center px-4">
+                    <button id="hamburger" name="hamburger" type="button" class="block absolute right-4 lg:hidden">
+                        <span class="hamburger-line transition duration-300 ease-in-out origin-top-left"></span>
+                        <span class="hamburger-line transition duration-300 ease-in-out"></span>
+                        <span class="hamburger-line transition duration-300 ease-in-out origin-bottom-left"></span>
+                    </button>
+
+                    <nav id="nav-menu" class='hidden absolute px-4 py-5 bg-white shadow-lg rounded-lg max-w-[250px] w-full right-6 top-full lg:block lg:static lg:bg-transparent lg:max-w-full lg:shadow-none lg:rounded-none'>
+                        <ul class="block lg:flex ">
+                            <li class="group">
+                                <a href="#home" class="text-base text-black py-2 mx-8 flex group-hover:text-[#364DFA]">Beranda</a>
+                            </li>
+                            <li class="group">
+                                <a href="#knowledge" class="text-base text-black py-2 mx-8 flex  group-hover:text-[#364DFA] ">Knowledge</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- <div class="text-gray-400 text-sm"></div> <!-- your logo here--> --}}
+        {{-- <nav class="flex items-center gap-6 text-sm text-gray-700"> --}}
+            {{-- <a href="#">Home</a> --}}
+            {{-- <a href="#">Items</a> --}}
+            {{-- <a href="#">Knowledge</a> --}}
+            {{-- <a href="#">Pages</a> --}}
+            {{-- <a href="#" class="text-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+
+            </a> --}}
+        {{-- </nav> --}}
     </header>
 
     <!-- Hero Section -->
-    <section class="container mx-auto px-24 py-10  grid md:grid-cols-2 gap-8 ">
+    <section class="container mx-auto px-24 py-10  grid md:grid-cols-2 gap-6 ">
         <!-- Left Content -->
         <div class="space-y-6 py-16">
             <h1 class="text-3xl font-bold text-[#364DFA] uppercase">Welcome to IT Helpdesk</h1>
@@ -65,17 +104,211 @@
              <dotlottie-player
                 src="https://lottie.host/90bc2cdf-d55a-4924-8cec-dd275fb3cc20/jd3hfrqQ74.lottie"
                 background="transparent"
-                speed="1"
+                speed="0.75"
                 style="width: 100%; max-width: 450px; height: 450px"
                 loop
-                autoplay 
+                autoplay
                 class="max-w-sm w-full h-auto">
             </dotlottie-player>
         </div>
     </section>
 
+    <!-- Blog Section Start -->
+    7
+    <section id="knowledge" class="pt-5 pb-24 container px-24 py-10 w-full">
+        <div class="container">
+            <div class="w-full px-4">
+                <div class="max-w-xl space-y-6 mb-10 mx-auto text-center">
+                        <h1 class="text-3xl font-bold text-[#364DFA] uppercase">Knowledge Base</h1>
+
+
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3">
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tips menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tips menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tips menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tips menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tips menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tips menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Blog Section End -->
+
+    <!-- Video Section Start -->
+    <section id="video" class="container px-24 w-full">
+        <div class="container">
+            <div class="w-full">
+                <div class="max-w-xl mb-10 mx-auto text-center">
+                        <h1 class="text-3xl font-bold text-[#364DFA] uppercase">Video Tutorial</h1>
+
+
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3">
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tutorial menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tutorial menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tutorial menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex flex-wrap">
+                    <div class="w-full px-2">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 flex flex-row items-start">
+                            <img src="image/printer.jpg" alt="Printer" class="w-full pt-6">
+                            <div class="py-8 px-6 w-2/3">
+                                <h3>
+                                <a href="#" class="block mb-3 font-semibold text-xl hover:text-primary truncate">Tutorial menghubungkan printer</a>
+                                </h3>
+                                <p class="md:text-base truncate">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+                                <a href="#" class="text-sm text-[#364DFA]">Baca selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Video Section End -->
+
     <!-- Feature Boxes -->
-    <section class="grid grid-cols-2 md:grid-cols-4 mt-10">
+    <section class="grid grid-cols-2 md:grid-cols-4 mt-5">
         <!-- Knowledge Base -->
         <div class="bg-[#D97D48] text-white flex flex-col items-center justify-center py-8">
             <svg class="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 24 24">
@@ -123,6 +356,9 @@
             <p class="text-sm font-semibold">Support</p>
         </div>
     </section>
-
+    @vite(['resources/js/script.js'])
 </body>
+
+
+
 </html>

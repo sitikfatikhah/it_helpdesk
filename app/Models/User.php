@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     /**@use hasrole */
     use HasRoles;
-    
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -26,7 +26,6 @@ class User extends Authenticatable
         'nip',
         'name',
         'email',
-        'level_user',
         'status',
     ];
 

@@ -16,7 +16,7 @@ class UserExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
-            ExportColumn::make('company_name')
+            ExportColumn::make('company')
                 ->label('Company Name'),
             ExportColumn::make('nip')
                 ->label('NIP'),
@@ -24,8 +24,6 @@ class UserExporter extends Exporter
                 ->label('Name'),
             ExportColumn::make('email')
                 ->label('Email'),
-            ExportColumn::make('level_user')
-                ->label('Level User'),
             ExportColumn::make('status')
                 ->label('Status'),
             // ExportColumn::make('email_verified_at')

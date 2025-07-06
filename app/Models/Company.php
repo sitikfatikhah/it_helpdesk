@@ -2,19 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Department extends Model
+class Company extends Model
 {
     use HasFactory;
 
-    protected $table='departments';
-
-
     protected $fillable = [
-        'name',
+        'company',
     ];
 
     public function ticket()

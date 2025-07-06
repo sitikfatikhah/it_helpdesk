@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomLoginController;
+use App\Http\Controllers\ArticleController;
 use Illuminate\Http\Request;
 
 
@@ -18,4 +19,8 @@ Route::post('/submit-ticket', function (Request $request) {
 
     return redirect('/app'); // redirect ke dashboard Laravel
 });
+// Route::get('/article', function () {
+//     return view('article');
+// });
+Route::get('/article', [ArticleController::class, 'showArticle']);
 

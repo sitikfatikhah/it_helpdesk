@@ -14,7 +14,7 @@ class UserImporter extends Importer
     public static function getColumns(): array
     {
         return [
-            ImportColumn::make('company_name')
+            ImportColumn::make('company')
                 ->label('Company Name')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
@@ -30,10 +30,6 @@ class UserImporter extends Importer
                 ->label('Email')
                 ->requiredMapping()
                 ->rules(['required', 'email', 'max:255']),
-            ImportColumn::make('level_user')
-                ->label('Level User')
-                ->requiredMapping()
-                ->rules(['required', 'max:255']),
             ImportColumn::make('status')
                 ->label('Status')
                 ->requiredMapping()
@@ -66,5 +62,5 @@ class UserImporter extends Importer
 
         return $body;
     }
-    
+
 }

@@ -17,12 +17,12 @@ class UserSeeder extends Seeder
         foreach (range(1, 10) as $index) {
             DB::table('user')->insert([
                 'id' => $faker->word(),
-                'company_name' => $faker->word(),
+                'company_id' => $faker->word(),
                 'nip' => $faker->word(),
                 'name' => $faker->word(),
                 'email' => $faker->word(),
                 'department' => $faker->word(),
-                'level_user' => $faker->word(),
+                // 'level_user' => $faker->word(),
                 'status' => $faker->word(),
                 // 'email_verified_at' => $faker->word(),
                 'created_at' => now(),
@@ -30,4 +30,5 @@ class UserSeeder extends Seeder
             ]);
         }
     }
+
 }

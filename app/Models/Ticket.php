@@ -64,4 +64,11 @@ class Ticket extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
+
+
+
 }

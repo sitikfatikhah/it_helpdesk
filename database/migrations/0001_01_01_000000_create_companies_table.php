@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
+        // Membuat tabel 'companies'
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('name');
+            $table->string('company');
             $table->timestamps();
         });
+
+
     }
 
     /**
@@ -24,7 +26,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
-
+        Schema::dropIfExists('companies');
+        Schema::dropIfExists('sessions');
     }
 };

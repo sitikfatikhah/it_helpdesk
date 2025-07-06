@@ -4,30 +4,31 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource\RelationManagers;
+use Filament\Resources\Resource;
 use App\Models\Ticket;
+use App\Models\Post;
+use App\Filament\Imports\TicketImporter;
+use App\Filament\Exports\TicketExporter;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
-use App\Filament\Imports\TicketImporter;
-use Filament\Tables\Actions\ImportAction;
-use App\Filament\Exports\TicketExporter;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Forms\Components\DatePicker;
 use Illuminate\Support\Carbon;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
-use App\Models\Post;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\DatePicker;
 
 
 
@@ -83,7 +84,7 @@ class TicketResource extends Resource
                     ->default(now()->format('H:i')) // waktu saat ini
                     ->reactive() // supaya bisa trigger perubahan saat open_time diubah
                     ->required(),
-                
+
                 // Forms\Components\TimePicker::make('close_time')
                 //     ->default(fn () => now()->addHours(8)->format('H:i')) // default 8 jam setelah open_time
                 //     ->required()
@@ -97,7 +98,7 @@ class TicketResource extends Resource
                     ])
                     ->grouped()
                     ->required(),
-                    
+
                     Forms\Components\ToggleButtons::make('type_device')
                     ->label('Device Type')
                     ->options([
@@ -141,16 +142,22 @@ class TicketResource extends Resource
                     ->grouped()
                     ->required(),
 
-                Forms\Components\ToggleButtons::make('ticket_status')
-                    ->required()
-                    ->options([
-                        'on_progress' => 'On Progress',
-                        'solved' => 'Solved',
-                        'callback' => 'Callback',
-                        'monitored' => 'Monitored',
-                        'other' => 'Other',
-                    ])
-                    ->grouped(),
+                // Forms\Components\ToggleButtons::make('ticket_status')
+                //     ->required()
+                //     ->options([
+                //         'on_progress' => 'On Progress',
+                //         'solved' => 'Solved',
+                //         'callback' => 'Callback',
+                //         'monitored' => 'Monitored',
+                //         'other' => 'Other',
+                //     ])
+                //     ->grouped(),
+                Forms\Components\Select::make('ticket_status')
+                    ->relationship('status', 'name')
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name}")
+                    ->searchable(['name'])
+                    ->preload()
+                    ->required(),
             ]);
     }
 
@@ -158,26 +165,45 @@ class TicketResource extends Resource
 {
     return $table
         ->columns([
-            Tables\Columns\TextColumn::make('user.name'),
+            Tables\Columns\TextColumn::make('user.name')
+                ->label('User'),
             Tables\Columns\TextColumn::make('ticket_number')
+                ->label('Ticket Number')
                 ->searchable(),
             Tables\Columns\TextColumn::make('date')
+                ->label('Date')
                 ->date()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('open_time'),
-            Tables\Columns\TextColumn::make('priority_level'),
-            Tables\Columns\TextColumn::make('category'),
-            Tables\Columns\TextColumn::make('type_device'),
-            Tables\Columns\TextColumn::make('operation_system'),
+            Tables\Columns\TextColumn::make('open_time')
+                ->label('Open Time'),
+            Tables\Columns\TextColumn::make('category')
+                ->label('Category'),
+            Tables\Columns\TextColumn::make('type_device')
+                ->label('Type Device'),
+            Tables\Columns\TextColumn::make('operation_system')
+                ->label('Operation System'),
             Tables\Columns\TextColumn::make('software_or_application')
+                ->label('Software')
                 ->searchable(),
+            Tables\Columns\TextColumn::make('priority_level')
+                ->label('Priority Level'),
             Tables\Columns\TextColumn::make('ticket_status')
-                ->badge('danger', 'gray', 'info', 'primary', 'success', 'warning'),
+                ->label('Status')
+                ->badge()
+                ->color(fn(string $state): string => match ($state) {
+                    'other' => 'primary',
+                    'on_progress' => 'info',
+                    'solved' => 'success',
+                    'monitored' => 'warning',
+                    'callback' => 'danger'
+                }),
             Tables\Columns\TextColumn::make('created_at')
+                ->label('Created')
                 ->dateTime()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('updated_at')
+                ->label('Updated')
                 ->dateTime()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
@@ -196,7 +222,7 @@ class TicketResource extends Resource
             //
         ])
         ->actions([
-            
+
             // ✅ Custom Action to update ticket_status
             Action::make('updateStatus')
                 ->label('Update Status')
@@ -211,7 +237,8 @@ class TicketResource extends Resource
                             'other' => 'Other',
                         ])
                         ->required(),
-                    RichEditor::make('content'),
+                    RichEditor::make('content')
+                    ->label('Note'),
                 ])
                 ->action(function (array $data, Ticket $record): void {
                     $record->ticket_status = $data['ticket_status'];
@@ -219,20 +246,21 @@ class TicketResource extends Resource
                 })
                 ->modalHeading('Update Ticket Status')
                 ->icon('heroicon-m-arrow-path'),
-            
-            ActionGroup::make([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-                ->button()
-                ->label('Actions'),
-            
-            
+
+            // ActionGroup::make([
+            //     ViewAction::make(),
+            //     EditAction::make(),
+            //     DeleteAction::make(),
+            EditAction::make()
+                ->label('Edit')
+                ->button(),
+
+
         ])
         ->bulkActions([
             Tables\Actions\BulkActionGroup::make([
                 Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\EditBulkAction::make(),
             ]),
         ])
         ->headerActions([
@@ -241,7 +269,11 @@ class TicketResource extends Resource
                 ->csvDelimiter(';'),
             ExportAction::make()
                 ->exporter(TicketExporter::class)
+                ->columnMapping(false)
                 ->csvDelimiter(';'),
+            // EditAction::make()
+            //     ->button()
+            //     ->label('Edit'),
         ]);
 }
 

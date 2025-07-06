@@ -26,7 +26,7 @@ class DepartmentResource extends Resource
     return $form
         ->schema([
             Forms\Components\TextInput::make('name')
-                ->label('Nama Departemen')
+                ->label('Departement')
                 ->required()
                 ->maxLength(255),
 
@@ -46,8 +46,10 @@ class DepartmentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label('Manager')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

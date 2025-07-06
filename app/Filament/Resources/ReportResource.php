@@ -121,7 +121,7 @@ class ReportResource extends Resource
                             DatePicker::make('created_from')->label('From'),
                             DatePicker::make('created_until')->label('To')
                         ])
-                        
+
                     ])
                     ->query(function ($query, array $data) {
                         return $query
@@ -169,6 +169,7 @@ class ReportResource extends Resource
             ->headerActions([
             ExportAction::make()
                 ->exporter(ReportExporter::class)
+                ->columnMapping(false)
                 ->csvDelimiter(';'),
             ]);
     }

@@ -2,51 +2,56 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Company;
+use App\Models\Department;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
-class DatabaseSeeder extends Seeder
+class DatabaseSeeder extends Seeder // Ganti dengan nama seeder kamu
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // You can uncomment this line if you want to create 10 users using the factory
-        User::factory(300)->create();
+        // Buat satu perusahaan
+        $com = Company::create([
+            'company' => 'CSA',
+        ]);
+        $dept = Department::create([
+            'name' => 'CSA',
+            'user_id'=>null
+        ]);
 
-        // Create a superadmin user
-        User::factory()->create([
-            'company_name' => 'CSA',
-            'nip' => '001', // It's a string because NIK could have leading zeros
+        // Buat user Superadmin
+        User::create([
+            'company_id' => $com->id,
+            'nip' => '001',
             'name' => 'Superadmin',
             'email' => 'superadmin@csa.tes',
-            'level_user' => 'superadmin',
             'status' => 'active',
-            // 'email_verified_at' => Carbon::now(),
             'password' => Hash::make('123456789'),
+            'department'=>$dept->id
         ]);
-        User::factory()->create([
-            'company_name' => 'CSA',
-            'nip' => '002', // It's a string because NIK could have leading zeros
+
+        // Buat user Administrator
+        User::create([
+            'company_id' => $com->id,
+            'nip' => '002',
             'name' => 'Administrator',
             'email' => 'administrator@csa.tes',
-            'level_user' => 'administrator',
             'status' => 'active',
-            // 'email_verified_at' => Carbon::now(),
             'password' => Hash::make('123456789'),
+            'department'=>$dept->id
         ]);
-        User::factory()->create([
-            'company_name' => 'CSA',
-            'nip' => '003', // It's a string because NIK could have leading zeros
+
+        // Buat user Operator
+        User::create([
+            'company_id' => $com->id,
+            'nip' => '003',
             'name' => 'Operator',
             'email' => 'operator@csa.tes',
-            'level_user' => 'opertor',
             'status' => 'active',
-            // 'email_verified_at' => Carbon::now(),
             'password' => Hash::make('123456789'),
+            'department'=>$dept->id
         ]);
     }
 }
