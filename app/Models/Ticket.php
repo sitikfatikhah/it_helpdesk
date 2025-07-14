@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Department;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -10,11 +13,12 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $table='ticket';
+
+    protected $table='tickets';
 
     protected $fillable = [
         'user_id',
-        'department_id',
+        'department',
         'ticket_number',
         'date',
         'open_time',
@@ -43,7 +47,7 @@ class Ticket extends Model
         static::creating(function ($ticket) {
             $today = now()->format('Ymd'); // Format: 20250411
 
-            $countToday = DB::table('ticket')
+            $countToday = DB::table('tickets')
                 ->whereDate('created_at', now()->toDateString())
                 ->count();
 
@@ -64,10 +68,7 @@ class Ticket extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
+
 
 
 

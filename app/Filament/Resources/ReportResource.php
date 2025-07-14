@@ -26,7 +26,10 @@ class ReportResource extends Resource
 {
     protected static ?string $model = Ticket::class;
 
+    protected static ?string $modelLabel = 'Report';
+
     protected static ?string $navigationIcon = 'clarity-export-outline-badged';
+
     protected static ?string $navigationLabel = 'Report';
 
     protected static ?string $navigationGroup = 'Ticket Report';
@@ -38,7 +41,7 @@ class ReportResource extends Resource
                 Forms\Components\TextInput::make('user_id')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('department_id')
+                Forms\Components\TextInput::make('department')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('ticket_number')
@@ -80,7 +83,7 @@ class ReportResource extends Resource
                 Tables\Columns\TextColumn::make('user_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('department_id')
+                Tables\Columns\TextColumn::make('department')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ticket_number')
@@ -179,6 +182,10 @@ class ReportResource extends Resource
         return [
             'index' => Pages\ManageReports::route('/'),
         ];
+    }
+    public static function getNavigationBadge(): ?string
+    {
+    return static::getModel()::count();
     }
 
     // public function getFormats(): array

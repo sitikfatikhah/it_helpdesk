@@ -15,10 +15,10 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
             $table->string('nip')->unique(); // Bisa menyimpan NIP dengan nol di depan
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('department');
             $table->string('status');
             $table->string('password');
             $table->rememberToken(); // Token untuk "remember me"
@@ -38,7 +38,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('password_reset_tokens');
+
         Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+
     }
 };

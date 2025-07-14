@@ -27,7 +27,7 @@ class ReportController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'department_id' => 'required|exists:departments,id',
+            'department_id' => 'required|exists:users,department',
             'ticket_number' => 'required|unique:reports,ticket_number',
             'date' => 'required|date',
             'open_time' => 'nullable',

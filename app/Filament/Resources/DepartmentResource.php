@@ -32,7 +32,7 @@ class DepartmentResource extends Resource
 
             Forms\Components\Select::make('user_id')
                 ->label('Manager')
-                ->relationship('user', 'nip')
+                ->relationship('user', 'user_id')
                 ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nip} - {$record->name}")
                 ->searchable()
                 ->preload()
@@ -79,5 +79,9 @@ class DepartmentResource extends Resource
         return [
             'index' => Pages\ManageDepartments::route('/'),
         ];
+    }
+    public static function getNavigationBadge(): ?string
+    {
+    return static::getModel()::count();
     }
 }

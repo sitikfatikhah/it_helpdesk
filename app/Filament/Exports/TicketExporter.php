@@ -17,7 +17,7 @@ class TicketExporter extends Exporter
             ExportColumn::make('id')
                 ->label('ID'),
             ExportColumn::make('user_id'),
-            ExportColumn::make('department_id'),
+            ExportColumn::make('department'),
             ExportColumn::make('ticket_number'),
             ExportColumn::make('date'),
             ExportColumn::make('open_time'),

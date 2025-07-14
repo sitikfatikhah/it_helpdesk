@@ -22,7 +22,8 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'company_name',
+
+        'company_id',
         'nip',
         'name',
         'email',
@@ -53,8 +54,24 @@ class User extends Authenticatable
     }
 
     public function ticket()
-{
+    {
     return $this->hasMany(Post::class);
-}
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'departement_id', 'id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
 
 }

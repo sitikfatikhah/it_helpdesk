@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Models\Company;
+use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
@@ -16,11 +17,14 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Filament\Imports\UserImporter;
 use Filament\Tables\Actions\ImportAction;
 use App\Filament\Exports\UserExporter;
 use Filament\Tables\Actions\ExportAction;
 use Illuminate\Support\Str;
+use Spatie\Permission\Traits\HasRoles;
+
 
 
 class UserResource extends Resource
@@ -36,7 +40,7 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('company')
-                    ->relationship('companies', 'company')
+                    ->relationship('company', 'company')
                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->company}")
                     // ->multiple()
                     ->label('Company')
@@ -55,28 +59,29 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
-                Forms\Components\Select::make('department')
-                    ->relationship('department', 'name')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->name}")
-                    // ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->required(),
+                // Forms\Components\Select::make('department')
+                //     ->relationship('department', 'name')
+                //     // ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->name}")
+                //     // ->multiple()
+                //     ->preload()
+                //     ->searchable()
+                //     ->required(),
                 Forms\Components\Select::make('status')
-                    ->relationship('status', 'name')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->name}")
-                    // ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->required(),
-                // Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+                    ->label('Status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                        ])
+                        ->default('Active')
+                        ->required(),
+                        // Forms\Components\DateTimePicker::make('email_verified_at'),
+                        Forms\Components\TextInput::make('password')
+                            ->password()
+                            ->required()
+                            ->maxLength(255),
 
                 // Role dengan Laravel Shield (Spatie)
-                Forms\Components\Select::make('roles')
+                Forms\Components\Select::make('role')
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload()
@@ -96,7 +101,7 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('company.name')
+                Tables\Columns\TextColumn::make('company.company')
                     ->label('Company')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nip')
@@ -150,13 +155,13 @@ class UserResource extends Resource
                         ])
                         ->required(),
                     RichEditor::make('content'),
-                ])
-                    ->action(function (array $data, User $record): void {
-                        $record->status = $data['status'];
-                        $record->save();
-                    })
-                    ->modalHeading('Update User Status')
-                    ->icon('heroicon-m-arrow-path'),
+                        ])
+                            ->action(function (array $data, User $record): void {
+                                $record->status = $data['status'];
+                                $record->save();
+                            })
+                            ->modalHeading('Update User Status')
+                            ->icon('heroicon-m-arrow-path'),
 
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -192,4 +197,21 @@ class UserResource extends Resource
         ->snake()
         ->replace('_', '::');
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+    return static::getModel()::count();
+    }
+
+    public function department(): BelongsTo
+    {
+    return $this->belongsTo(Department::class);
+    }
+
+    public function company(): BelongsTo
+    {
+    return $this->belongsTo(Company::class);
+    }
+
+
 }

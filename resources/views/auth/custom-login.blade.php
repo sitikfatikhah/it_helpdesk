@@ -21,15 +21,14 @@
 <body class="bg-[#F1F4F5]">
 
     <!-- Navbar -->
-    <header class="fixed px-24 top-0 left-0 w-full flex items-center z-10">
-        <div class="container">
-            <div class="flex items-center justify between relative">
-                <div class="px-4">
+    <header class="fixed px-24 top-0 left-0 w-full flex items-center z-10 border-b">
+        <div class="flex justify-between items-center relative max-w-screen-xl mx-auto px-6 h-16">
+                <div class="space-y-6 py-16">
                     <a href="home" class="space-y-6 font-bold text-lg text-primary block py-6">
                         IT Helpdesk
                     </a>
                 </div>
-                <div class="flex flex-row justify-between items-center px-4">
+                <div class="flex flex-row items-center px-4 space-x-4">
                     <button id="hamburger" name="hamburger" type="button" class="block absolute right-4 lg:hidden">
                         <span class="hamburger-line transition duration-300 ease-in-out origin-top-left"></span>
                         <span class="hamburger-line transition duration-300 ease-in-out"></span>
@@ -51,7 +50,6 @@
 
             </div>
 
-        </div>
 
         {{-- <div class="text-gray-400 text-sm"></div> <!-- your logo here--> --}}
         {{-- <nav class="flex items-center gap-6 text-sm text-gray-700"> --}}
@@ -114,8 +112,8 @@
     </section>
 
     <!-- Blog Section Start -->
-    7
-    <section id="knowledge" class="pt-5 pb-24 container px-24 py-10 w-full">
+
+    {{-- <section id="knowledge" class="pt-5 pb-24 container px-24 py-10 w-full">
         <div class="container">
             <div class="w-full px-4">
                 <div class="max-w-xl space-y-6 mb-10 mx-auto text-center">
@@ -221,12 +219,12 @@
             </div>
         </div>
 
-    </section>
+    </section> --}}
 
     <!-- Blog Section End -->
 
     <!-- Video Section Start -->
-    <section id="video" class="container px-24 w-full">
+    {{-- <section id="video" class="container px-24 w-full">
         <div class="container">
             <div class="w-full">
                 <div class="max-w-xl mb-10 mx-auto text-center">
@@ -303,7 +301,7 @@
             </div>
         </div>
 
-    </section>
+    </section> --}}
 
     <!-- Video Section End -->
 

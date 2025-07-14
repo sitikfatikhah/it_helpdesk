@@ -3,280 +3,204 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketResource\Pages;
-use App\Filament\Resources\TicketResource\RelationManagers;
-use Filament\Resources\Resource;
 use App\Models\Ticket;
-use App\Models\Post;
+use App\Models\User;
+use App\Models\Department;
 use App\Filament\Imports\TicketImporter;
 use App\Filament\Exports\TicketExporter;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Actions\ImportAction;
-use Filament\Tables\Columns\SelectColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\DatePicker;
-
-
 
 class TicketResource extends Resource
 {
     protected static ?string $model = Ticket::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
-
     protected static ?string $navigationGroup = 'Master Ticket';
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'nip')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nip} - {$record->name}")
-                    ->searchable(['name', 'email'])
-                    ->preload()
-                    ->required(),
-                Forms\Components\Select::make('department_id')
-                    ->relationship('department', 'name')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->name}")
-                    ->searchable('id', 'name')
-                    // ->createOptionForm([
-                    //     Forms\Components\TextInput::make('name')
-                    //         ->label('Departement')
-                    //         ->required(),
-                    // ])
-                    ->preload()
-                    ->required(),
-                Forms\Components\TextInput::make('ticket_number')
-                    ->label('Ticket Number')
-                    ->default(function () {
-                    $yearSuffix = now()->format('y'); // Ambil 2 digit belakang tahun, misalnya: '25'
-                    $countThisYear = DB::table('ticket')
-                        ->whereYear('created_at', now()->year)
-                        ->count();
+        return $form->schema([
+           Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->default(Auth::id())
+                ->relationship('user', 'name')
+                ->reactive()
+                ->afterStateUpdated(fn ($state, callable $set) =>
+                    $set('department_id', \App\Models\User::find($state)?->department_id)
+                )
+                ->disabled(fn () => !auth()->user()->hasRole('superadmin')) // ❌ selain superadmin: tidak bisa ubah
+                ->dehydrated(true)
+                ->required(),
 
-                    $sequence = str_pad($countThisYear + 1, 3, '0', STR_PAD_LEFT);
+            Forms\Components\Select::make('department_id')
+                ->default(Auth::user()->department_id)
+                ->label('Department')
+                ->options(fn () => Department::all()->pluck('name', 'id'))
+                ->disabled()
+                ->dehydrated(true)
+                ->required(),
 
-                    return 'TC-' . $yearSuffix . $sequence;
+            Forms\Components\TextInput::make('ticket_number')
+                ->label('Ticket Number')
+                ->default(function () {
+                    $yearSuffix = now()->format('y');
+                    $countThisYear = Ticket::whereYear('created_at', now()->year)->count();
+                    return 'TC-' . $yearSuffix . str_pad($countThisYear + 1, 3, '0', STR_PAD_LEFT);
                 })
-                    ->disabled()
-                    ->dehydrated(false)
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('date')
-                    ->default(today()) // isi otomatis tanggal hari ini
-                    ->required(),
-                Forms\Components\TimePicker::make('open_time')
-                    ->default(now()->format('H:i')) // waktu saat ini
-                    ->reactive() // supaya bisa trigger perubahan saat open_time diubah
-                    ->required(),
+                ->disabled()
+                ->dehydrated(false)
+                ->required(),
 
-                // Forms\Components\TimePicker::make('close_time')
-                //     ->default(fn () => now()->addHours(8)->format('H:i')) // default 8 jam setelah open_time
-                //     ->required()
-                //     ->disabled(), // agar tidak bisa diubah manual
-                Forms\Components\ToggleButtons::make('category')
-                    ->options([
-                        'software' => 'Software',
-                        'hardware' => 'Hardware',
-                        'network' => 'Network',
-                        'other' => 'Other',
-                    ])
-                    ->grouped()
-                    ->required(),
+            Forms\Components\DatePicker::make('date')
+                ->default(today())
+                ->required(),
 
-                    Forms\Components\ToggleButtons::make('type_device')
-                    ->label('Device Type')
-                    ->options([
-                        'desktop' => 'Desktop',
-                        'laptop' => 'Laptop',
-                        'printer' => 'Printer', // typo fixed
-                        'other' => 'Other',
-                    ])
-                    ->required()
-                    ->grouped(),
+            Forms\Components\TimePicker::make('open_time')
+                ->default(now()->format('H:i'))
+                ->reactive()
+                ->required(),
 
-                Forms\Components\ToggleButtons::make('operation_system')
-                    ->required()
-                    ->options([
-                        'windows' => 'Windows',
-                        'macos' => 'MacOS',
-                        'linux' => 'Linux',
-                        'other' => 'Other',
-                    ])
-                    ->grouped(),
+            Forms\Components\ToggleButtons::make('category')
+                ->options([
+                    'software' => 'Software',
+                    'hardware' => 'Hardware',
+                    'network' => 'Network',
+                    'other' => 'Other',
+                ])
+                ->grouped()
+                ->required(),
 
-                Forms\Components\TextInput::make('software_or_application')
-                    ->required()
-                    ->maxLength(255),
+            Forms\Components\ToggleButtons::make('type_device')
+                ->label('Device Type')
+                ->options([
+                    'desktop' => 'Desktop',
+                    'laptop' => 'Laptop',
+                    'printer' => 'Printer',
+                    'other' => 'Other',
+                ])
+                ->grouped()
+                ->required(),
 
-                Forms\Components\TextInput::make('error_message')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('step_taken')
-                    ->columnSpanFull(),
+            Forms\Components\ToggleButtons::make('operation_system')
+                ->options([
+                    'windows' => 'Windows',
+                    'macos' => 'MacOS',
+                    'linux' => 'Linux',
+                    'other' => 'Other',
+                ])
+                ->grouped()
+                ->required(),
 
-                Forms\Components\ToggleButtons::make('priority_level')
-                    ->options([
-                        'low' => 'Low',
-                        'medium' => 'Medium',
-                        'high' => 'High',
-                    ])
-                    ->grouped()
-                    ->required(),
+            Forms\Components\TextInput::make('software_or_application')
+                ->required(),
 
-                // Forms\Components\ToggleButtons::make('ticket_status')
-                //     ->required()
-                //     ->options([
-                //         'on_progress' => 'On Progress',
-                //         'solved' => 'Solved',
-                //         'callback' => 'Callback',
-                //         'monitored' => 'Monitored',
-                //         'other' => 'Other',
-                //     ])
-                //     ->grouped(),
-                Forms\Components\Select::make('ticket_status')
-                    ->relationship('status', 'name')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name}")
-                    ->searchable(['name'])
-                    ->preload()
-                    ->required(),
-            ]);
+            Forms\Components\TextInput::make('error_message')
+                ->required(),
+
+            Forms\Components\Textarea::make('description')
+                ->columnSpanFull()
+                ->required(),
+
+            Forms\Components\Textarea::make('step_taken')
+                ->columnSpanFull(),
+
+            Forms\Components\ToggleButtons::make('priority_level')
+                ->options([
+                    'low' => 'Low',
+                    'medium' => 'Medium',
+                    'high' => 'High',
+                ])
+                ->default('low')
+                ->grouped()
+                ->required()
+                ->disabled(fn () => !Auth::user()?->hasRole('superadmin')),
+
+            Forms\Components\Select::make('ticket_status')
+                ->label('Status')
+                ->options([
+                    'on_progress' => 'On Progress',
+                    'solved' => 'Solved',
+                    'callback' => 'Callback',
+                    'monitored' => 'Monitored',
+                    'other' => 'Other',
+                ])
+                ->default('on_progress')
+                ->disabled(fn () => !Auth::user()?->hasRole('superadmin'))
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            Tables\Columns\TextColumn::make('user.name')
-                ->label('User'),
-            Tables\Columns\TextColumn::make('ticket_number')
-                ->label('Ticket Number')
-                ->searchable(),
-            Tables\Columns\TextColumn::make('date')
-                ->label('Date')
-                ->date()
-                ->sortable(),
-            Tables\Columns\TextColumn::make('open_time')
-                ->label('Open Time'),
-            Tables\Columns\TextColumn::make('category')
-                ->label('Category'),
-            Tables\Columns\TextColumn::make('type_device')
-                ->label('Type Device'),
-            Tables\Columns\TextColumn::make('operation_system')
-                ->label('Operation System'),
-            Tables\Columns\TextColumn::make('software_or_application')
-                ->label('Software')
-                ->searchable(),
-            Tables\Columns\TextColumn::make('priority_level')
-                ->label('Priority Level'),
-            Tables\Columns\TextColumn::make('ticket_status')
-                ->label('Status')
-                ->badge()
-                ->color(fn(string $state): string => match ($state) {
-                    'other' => 'primary',
-                    'on_progress' => 'info',
-                    'solved' => 'success',
-                    'monitored' => 'warning',
-                    'callback' => 'danger'
-                }),
-            Tables\Columns\TextColumn::make('created_at')
-                ->label('Created')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            Tables\Columns\TextColumn::make('updated_at')
-                ->label('Updated')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            // Tables\Columns\SelectColumn::make('status')
-            //     ->options([
-            //         'waiting' => 'Waiting',
-            //         'on_progress' => 'On Progress',
-            //         'confirmed' => 'Confirmed',
-            //         'solved' => 'Solved',
-            //         'closed' => 'Closed',
-            //     ])
-                // ->sortable()
-                // ->toggleable(isToggledHiddenByDefault: true),
-        ])
-        ->filters([
-            //
-        ])
-        ->actions([
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('user.name')->label('User'),
+                Tables\Columns\TextColumn::make('ticket_number')->searchable(),
+                Tables\Columns\TextColumn::make('date')->date()->sortable(),
+                Tables\Columns\TextColumn::make('open_time'),
+                Tables\Columns\TextColumn::make('category'),
+                Tables\Columns\TextColumn::make('type_device'),
+                Tables\Columns\TextColumn::make('operation_system'),
+                Tables\Columns\TextColumn::make('software_or_application')->searchable(),
+                Tables\Columns\TextColumn::make('priority_level'),
+                Tables\Columns\TextColumn::make('ticket_status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'other' => 'primary',
+                        'on_progress' => 'info',
+                        'solved' => 'success',
+                        'monitored' => 'warning',
+                        'callback' => 'danger',
+                    }),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([])
+            ->actions([
+                Action::make('updateStatus')
+                    ->label('Update Status')
+                    ->form([
+                        Select::make('ticket_status')
+                            ->label('Status')
+                            ->options([
+                                'on_progress' => 'On Progress',
+                                'solved' => 'Solved',
+                                'callback' => 'Callback',
+                                'monitored' => 'Monitored',
+                                'other' => 'Other',
+                            ])
+                            ->required(),
+                        RichEditor::make('content')->label('Note'),
+                    ])
+                    ->modalHeading('Update Ticket Status')
+                    ->icon('heroicon-m-arrow-path'),
 
-            // ✅ Custom Action to update ticket_status
-            Action::make('updateStatus')
-                ->label('Update Status')
-                ->form([
-                    Select::make('ticket_status')
-                        ->label('Status')
-                        ->options([
-                            'on_progress' => 'On Progress',
-                            'solved' => 'Solved',
-                            'callback' => 'Callback',
-                            'monitored' => 'Monitored',
-                            'other' => 'Other',
-                        ])
-                        ->required(),
-                    RichEditor::make('content')
-                    ->label('Note'),
-                ])
-                ->action(function (array $data, Ticket $record): void {
-                    $record->ticket_status = $data['ticket_status'];
-                    $record->save();
-                })
-                ->modalHeading('Update Ticket Status')
-                ->icon('heroicon-m-arrow-path'),
+                Tables\Actions\EditAction::make()->label('Edit')->button(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(TicketImporter::class)
+                    ->csvDelimiter(';'),
 
-            // ActionGroup::make([
-            //     ViewAction::make(),
-            //     EditAction::make(),
-            //     DeleteAction::make(),
-            EditAction::make()
-                ->label('Edit')
-                ->button(),
-
-
-        ])
-        ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-                // Tables\Actions\EditBulkAction::make(),
-            ]),
-        ])
-        ->headerActions([
-            ImportAction::make()
-                ->importer(TicketImporter::class)
-                ->csvDelimiter(';'),
-            ExportAction::make()
-                ->exporter(TicketExporter::class)
-                ->columnMapping(false)
-                ->csvDelimiter(';'),
-            // EditAction::make()
-            //     ->button()
-            //     ->label('Edit'),
-        ]);
-}
-
+                Tables\Actions\ExportAction::make()
+                    ->exporter(TicketExporter::class)
+                    ->columnMapping(false)
+                    ->csvDelimiter(';'),
+            ]);
+    }
 
     public static function getPages(): array
     {
@@ -286,10 +210,7 @@ class TicketResource extends Resource
     }
 
     public static function getNavigationBadge(): ?string
-{
-    return static::getModel()::count();
-}
-
-
-
+    {
+        return static::getModel()::count();
+    }
 }

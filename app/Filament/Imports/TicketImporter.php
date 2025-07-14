@@ -20,8 +20,8 @@ class TicketImporter extends Importer
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
-            ImportColumn::make('department_id')
-                ->label('Department ID')
+            ImportColumn::make('department')
+                ->label('Department')
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),

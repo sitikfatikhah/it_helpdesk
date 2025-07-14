@@ -13,7 +13,7 @@ class Report extends Model
 
     protected $fillable = [
         'user_id',
-        'department_id',
+        'department',
         'ticket_number',
         'date',
         'open_time',

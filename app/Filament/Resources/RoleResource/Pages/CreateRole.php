@@ -44,4 +44,10 @@ class CreateRole extends CreateRecord
 
         $this->record->syncPermissions($permissionModels);
     }
+
+    protected function getRedirectUrl(): string
+    {
+    return $this->getResource()::getUrl('index');
+    }
+
 }

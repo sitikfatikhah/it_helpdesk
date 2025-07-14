@@ -26,7 +26,8 @@ class DepartmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'department_id'=> Department::factory(), // relasi otomatis ke department
+            'name' => $this->faker->department(),
+            'manager' => $this->faker->name(),
         ];
     }
 }
