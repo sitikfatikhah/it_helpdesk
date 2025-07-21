@@ -21,8 +21,8 @@
 <body class="bg-[#F1F4F5]">
 
     <!-- Navbar -->
-    <header class="fixed px-24 top-0 left-0 w-full flex items-center z-10 border-b">
-        <div class="flex justify-between items-center relative max-w-screen-xl mx-auto px-6 h-16">
+    <header class="fixed top-0 left-0 w-full flex items-center z-10 border-b">
+        <div class="container flex justify-between items-center relative max-w-screen-xl mx-auto px-24 h-16">
                 <div class="space-y-6 py-16">
                     <a href="home" class="space-y-6 font-bold text-lg text-primary block py-6">
                         IT Helpdesk

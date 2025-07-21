@@ -15,17 +15,17 @@ class StatsDashboard extends BaseWidget
     protected function getStats(): array
     {
         $countTicket = Ticket::count();
-        
-        //count by status
-        $countTicketStatus = DB::Table('Ticket')->count();
 
-        $countonProgress = DB::table('Ticket')
+        //count by status
+        $countTicketStatus = DB::Table('tickets')->count();
+
+        $countonProgress = DB::table('tickets')
             ->where('ticket_status','on_progress')
             ->count();
-        $countsolved = DB::table('Ticket')
+        $countsolved = DB::table('tickets')
             ->where('ticket_status', 'solved')
             ->count();
-        $countcallback = DB::table('Ticket')
+        $countcallback = DB::table('tickets')
             ->where('ticket_status', 'callback')
             ->count();
 
@@ -46,7 +46,7 @@ class StatsDashboard extends BaseWidget
                 ->color('warning'),
 
             // Stat::make(label: 'Solved', value: $solvedCount  . ' ')
-                
+
             //     ->extraAttributes([
             //         'class' => 'border-yellow-300 border-2 bg-yellow-50 text-yellow-900 font-semibold',
             //     ]),

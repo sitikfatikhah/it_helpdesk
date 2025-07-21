@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Auth\Login;
+use App\Filament\Widgets\StatsDashboard;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -52,6 +53,7 @@ class AppPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
+                StatsDashboard::class,
             ])
             ->middleware([
                 EncryptCookies::class,
