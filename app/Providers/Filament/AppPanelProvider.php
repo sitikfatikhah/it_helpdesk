@@ -21,6 +21,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Auth\Login;
 use App\Filament\Widgets\StatsDashboard;
+use App\Filament\Widgets\TicketChart;
+use App\Filament\Pages\Auth\LoginCustom;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -30,7 +32,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
-            ->login(Login::class)
+            ->login(LoginCustom::class)
             ->registration()
             ->colors([
                 'danger' => Color::Rose,
@@ -71,6 +73,11 @@ class AppPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
-            ]);
+            ])
+            ->resources([
+                 \App\Filament\Resources\TicketResource::class,
+                    // \App\Filament\Resources\ReportResource::class,
+                ])
+            ;
     }
 }

@@ -25,10 +25,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::unguard();
 
-        ;
-        
-        // ...
-        }
+    // ...
     }
-    
-    
+}
+
+

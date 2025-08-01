@@ -111,16 +111,6 @@
         </div>
     </section>
 
-    {{-- <section class="container mx-auto px-24 py-10 items-center ">
-        <!-- Submit Ticket -->
-            <div class="flex flex-col items-center bg-white rounded-lg px-6">
-                <p class="mb-2">Submit ticket</p>
-                <!--form here-->
-                @livewire('home')
-
-            </div>
-    </section> --}}
-
     <!-- Blog Section Start -->
 
     {{-- <section id="knowledge" class="pt-5 pb-24 container px-24 py-10 w-full">
@@ -316,7 +306,7 @@
     <!-- Video Section End -->
 
     <!-- Feature Boxes -->
-    {{-- <section class="grid grid-cols-2 md:grid-cols-4 mt-5">
+    <section class="grid grid-cols-2 md:grid-cols-4 mt-5">
         <!-- Knowledge Base -->
         <div class="bg-[#D97D48] text-white flex flex-col items-center justify-center py-8">
             <svg class="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 24 24">
@@ -363,7 +353,7 @@
         </svg>
             <p class="text-sm font-semibold">Support</p>
         </div>
-    </section> --}}
+    </section>
     @vite(['resources/js/script.js'])
 </body>
 

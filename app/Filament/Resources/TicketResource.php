@@ -17,13 +17,31 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\RichEditor;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TimePicker;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Enums\FiltersLayout;
 
-class TicketResource extends Resource
+
+class TicketResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Ticket::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
     protected static ?string $navigationGroup = 'Master Ticket';
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
 
     public static function form(Form $form): Form
     {
@@ -43,7 +61,7 @@ class TicketResource extends Resource
             Forms\Components\Select::make('department_id')
                 ->default(Auth::user()->department_id)
                 ->label('Department')
-                ->options(fn () => Department::all()->pluck('name', 'id'))
+                ->options(fn () => Department::all()>pluck('name')->toArray())
                 ->disabled()
                 ->dehydrated(true)
                 ->required(),
@@ -65,6 +83,7 @@ class TicketResource extends Resource
 
             Forms\Components\TimePicker::make('open_time')
                 ->default(now()->format('H:i'))
+                ->displayFormat('H:i')
                 ->reactive()
                 ->required(),
 
@@ -86,8 +105,9 @@ class TicketResource extends Resource
                     'printer' => 'Printer',
                     'other' => 'Other',
                 ])
+                ->visible(fn () => auth()->user()->hasRole('superadmin'))
                 ->grouped()
-                ->required(),
+                ->nullable(),
 
             Forms\Components\ToggleButtons::make('operation_system')
                 ->options([
@@ -96,20 +116,25 @@ class TicketResource extends Resource
                     'linux' => 'Linux',
                     'other' => 'Other',
                 ])
+                ->visible(fn () => auth()->user()->hasRole('superadmin'))
                 ->grouped()
-                ->required(),
+                ->nullable(),
 
             Forms\Components\TextInput::make('software_or_application')
-                ->required(),
+                ->visible(fn () => auth()->user()->hasRole('superadmin'))
+                ->default('-')
+                ->dehydrated(true),
 
             Forms\Components\TextInput::make('error_message')
-                ->required(),
+                ->visible(fn () => auth()->user()->hasRole('superadmin'))
+                ->nullable(),
 
             Forms\Components\Textarea::make('description')
                 ->columnSpanFull()
                 ->required(),
 
             Forms\Components\Textarea::make('step_taken')
+                ->visible(fn () => auth()->user()->hasRole('superadmin'))
                 ->columnSpanFull(),
 
             Forms\Components\ToggleButtons::make('priority_level')
@@ -120,7 +145,7 @@ class TicketResource extends Resource
                 ])
                 ->default('low')
                 ->grouped()
-                ->required()
+                ->nullable()
                 ->disabled(fn () => !Auth::user()?->hasRole('superadmin')),
 
             Forms\Components\Select::make('ticket_status')
@@ -134,7 +159,7 @@ class TicketResource extends Resource
                 ])
                 ->default('on_progress')
                 ->disabled(fn () => !Auth::user()?->hasRole('superadmin'))
-                ->required(),
+                ->nullable(),
         ]);
     }
 
@@ -145,6 +170,7 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')->label('User'),
                 Tables\Columns\TextColumn::make('ticket_number')->searchable(),
                 Tables\Columns\TextColumn::make('date')->date()->sortable(),
+                Tables\Columns\TextColumn::make('department.name')->label('Department'),
                 Tables\Columns\TextColumn::make('open_time'),
                 Tables\Columns\TextColumn::make('category'),
                 Tables\Columns\TextColumn::make('type_device'),
@@ -163,7 +189,44 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([])
+            ->filters(
+                [
+                    SelectFilter::make('ticket_status')
+                        ->label('Ticket Status')
+                        ->multiple()
+                        ->options([
+                            'on_progress' => 'On Progress',
+                            'solved' => 'Solved',
+                            'callback' => 'Callback',
+                            'monitored' => 'Monitored',
+                            'other' => 'Other',
+                        ]),
+
+                    SelectFilter::make('user_id')
+                        ->label('User')
+                        ->relationship('user', 'name', fn ($query) => $query->orderBy('name'))
+                        ->searchable()
+                        ->preload(),
+
+                    SelectFilter::make('category')
+                        ->options([
+                            'software' => 'Software',
+                            'hardware' => 'Hardware',
+                            'network' => 'Network',
+                            'other' => 'Other',
+                        ]),
+                    SelectFilter::make('type_device')
+                        ->label('Device Type')
+                        ->options([
+                            'desktop' => 'Desktop',
+                            'laptop' => 'Laptop',
+                            'printer' => 'Printer',
+                            'other' => 'Other',
+                        ])
+                ],
+                layout: FiltersLayout::AboveContent
+            )
+
             ->actions([
                 Action::make('updateStatus')
                     ->label('Update Status')
@@ -181,7 +244,8 @@ class TicketResource extends Resource
                         RichEditor::make('content')->label('Note'),
                     ])
                     ->modalHeading('Update Ticket Status')
-                    ->icon('heroicon-m-arrow-path'),
+                    ->icon('heroicon-m-arrow-path')
+                    ->visible(fn () => auth()->user()->hasRole('superadmin')),
 
                 Tables\Actions\EditAction::make()->label('Edit')->button(),
             ])
@@ -212,5 +276,9 @@ class TicketResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
+    }
+     public static function canViewAny(): bool
+    {
+    return true; // pastikan tidak false
     }
 }

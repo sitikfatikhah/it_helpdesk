@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Traits\HasRoles;
 
 class Ticket extends Model
 {
+    /**@use hasrole */
+    use HasRoles;
+
     use HasFactory;
 
 
@@ -67,6 +71,12 @@ class Ticket extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+     public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
 
 
 

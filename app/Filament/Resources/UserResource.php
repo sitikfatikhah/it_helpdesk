@@ -24,10 +24,11 @@ use App\Filament\Exports\UserExporter;
 use Filament\Tables\Actions\ExportAction;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
 
 
-class UserResource extends Resource
+class UserResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = User::class;
 
@@ -35,13 +36,25 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Karyawan';
 
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('company')
-                    ->relationship('company', 'company')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->company}")
+                Forms\Components\Select::make('company_id')
+                    ->relationship('company', 'company_id')
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->company}")
                     // ->multiple()
                     ->label('Company')
                     ->preload()
