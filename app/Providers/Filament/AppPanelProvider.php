@@ -55,6 +55,7 @@ class AppPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
+                TicketChart::class,
                 StatsDashboard::class,
             ])
             ->middleware([
