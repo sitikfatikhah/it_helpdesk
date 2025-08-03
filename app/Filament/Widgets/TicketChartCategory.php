@@ -7,12 +7,13 @@ use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Carbon;
 
-class TicketChart extends ChartWidget
+class TicketChartCategory extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Tiket priority';
+    protected static ?string $heading = 'Ticket by Category';
 
+    // ✅ Full width
     protected int|string|array $columnSpan = '1';
 
     protected static ?int $sort = 3;
@@ -23,9 +24,9 @@ class TicketChart extends ChartWidget
     {
         return [
             'today' => 'Today',
-            'week' => 'Last week',
-            'month' => 'Last month',
-            'year' => 'This year',
+            'week' => 'Last Week',
+            'month' => 'Last Month',
+            'year' => 'This Year',
         ];
     }
 
@@ -33,7 +34,7 @@ class TicketChart extends ChartWidget
     {
         $activeFilter = $this->filter;
 
-        // Tentukan tanggal awal, tanggal akhir, dan format tanggal berdasarkan filter.
+        // ⏱ Define time range and date format
         switch ($activeFilter) {
             case 'today':
                 $startDate = now()->startOfDay();
@@ -58,62 +59,59 @@ class TicketChart extends ChartWidget
                 break;
         }
 
-        // Query untuk mengambil data tiket, digabungkan berdasarkan tanggal dan level prioritas.
+        // 📊 Get ticket data grouped by category and date
         $data = Ticket::query()
-            ->selectRaw("DATE_FORMAT(created_at, '{$dateFormat}') as date, priority_level, COUNT(*) as aggregate")
+            ->selectRaw("DATE_FORMAT(created_at, '{$dateFormat}') as date, category, COUNT(*) as aggregate")
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupByRaw("DATE_FORMAT(created_at, '{$dateFormat}'), priority_level")
+            ->groupByRaw("DATE_FORMAT(created_at, '{$dateFormat}'), category")
             ->orderByRaw("DATE_FORMAT(created_at, '{$dateFormat}') ASC")
             ->get();
 
-        // Mengambil semua tanggal unik untuk label sumbu-X
         $labels = $data->pluck('date')->unique()->sort()->values()->toArray();
+        $categories = $data->pluck('category')->unique()->sort()->values();
 
-        // Mengambil semua level prioritas unik untuk setiap dataset
-        $priorityLevels = $data->pluck('priority_level')->unique()->sort()->values();
-
-        // Mendefinisikan palet warna untuk setiap level prioritas
+        // 🎨 Optional color palette
         $colorPalette = [
-            'low' => '#3B82F6',    // Biru untuk prioritas rendah
-            'medium' => '#F59E0B', // Kuning untuk prioritas sedang
-            'high' => '#EF4444',   // Merah untuk prioritas tinggi
+            'software' => '#3B82F6',
+            'hardware' => '#F59E0B',
+            'network' => '#EF4444',
+            'other' => '#10B981',
         ];
 
         $datasets = [];
 
-        // Membuat dataset terpisah untuk setiap level prioritas
-        foreach ($priorityLevels as $priorityLevel) {
-            $priorityData = $data->where('priority_level', $priorityLevel);
+        foreach ($categories as $category) {
+            $categoryData = $data->where('category', $category);
 
-            // Memetakan agregat ke label tanggal yang benar
             $datasetData = [];
             foreach ($labels as $label) {
-                $count = $priorityData->where('date', $label)->first()->aggregate ?? 0;
+                $count = $categoryData->firstWhere('date', $label)?->aggregate ?? 0;
                 $datasetData[] = $count;
             }
 
             $datasets[] = [
-                'label' => 'Level ' . ucfirst($priorityLevel),
+                'label' => ucfirst($category),
                 'data' => $datasetData,
-                'backgroundColor' => $colorPalette[$priorityLevel] ?? '#6B7280', // Warna default jika tidak ditemukan
-                'borderColor' => $colorPalette[$priorityLevel] ?? '#6B7280',
+                'backgroundColor' => $colorPalette[$category] ?? '#6B7280',
+                'borderColor' => $colorPalette[$category] ?? '#6B7280',
                 'borderWidth' => 1,
             ];
         }
 
-        $labelFormated = [];
-        foreach ($labels as $label) {
-            $labelFormated[]=Carbon::parse($label)->format('Y-m-d');
-        }
+        // Format ulang label tanggal (opsional)
+        $labelFormatted = array_map(
+            fn ($label) => Carbon::parse($label)->format('Y-m-d'),
+            $labels
+        );
 
         return [
             'datasets' => $datasets,
-            'labels' => $labelFormated,
+            'labels' => $labelFormatted,
         ];
     }
 
     protected function getType(): string
     {
-        return 'bar'; // Atau 'line', 'pie', dsb
+        return 'bar'; // Bisa diganti dengan 'line', 'pie', dll.
     }
 }
