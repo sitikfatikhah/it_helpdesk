@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Department;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
