@@ -17,16 +17,19 @@ class UserSeeder extends Seeder
         foreach (range(1, 10) as $index) {
             DB::table('user')->insert([
                 'id' => $faker->word(),
-                'company_name' => $faker->word(),
+                'company' => $faker->word(),
                 'nip' => $faker->word(),
                 'name' => $faker->word(),
                 'email' => $faker->word(),
-                'level_user' => $faker->word(),
+                // 'department' => $faker->word(),
+                // 'level_user' => $faker->word(),
                 'status' => $faker->word(),
-                'email_verified_at' => $faker->word(),
+                // 'email_verified_at' => $faker->word(),
+                'role' => $faker->randomElement(['admin', 'user']),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
     }
+
 }

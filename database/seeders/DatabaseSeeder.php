@@ -2,51 +2,82 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Company;
+use App\Models\Department;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // You can uncomment this line if you want to create 10 users using the factory
-        User::factory(300)->create();
+        // Buat satu perusahaan
+        $company = Company::firstOrCreate([
+            'company' => 'CSA',
+        ]);
 
-        // Create a superadmin user
-        User::factory()->create([
-            'company_name' => 'CSA',
-            'nip' => '001', // It's a string because NIK could have leading zeros
-            'name' => 'Superadmin',
-            'email' => 'superadmin@csa.tes',
-            'level_user' => 'superadmin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now(),
-            'password' => Hash::make('123456789'),
-        ]);
-        User::factory()->create([
-            'company_name' => 'CSA',
-            'nip' => '002', // It's a string because NIK could have leading zeros
-            'name' => 'Administrator',
-            'email' => 'administrator@csa.tes',
-            'level_user' => 'administrator',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now(),
-            'password' => Hash::make('123456789'),
-        ]);
-        User::factory()->create([
-            'company_name' => 'CSA',
-            'nip' => '003', // It's a string because NIK could have leading zeros
-            'name' => 'Operator',
-            'email' => 'operator@csa.tes',
-            'level_user' => 'opertor',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now(),
-            'password' => Hash::make('123456789'),
-        ]);
+        // Buat beberapa department
+        $departments = collect(['IT', 'FAT', 'HRGA', 'MARKETING'])->mapWithKeys(function ($name) {
+            $dept = Department::firstOrCreate(['name' => $name]);
+            return [$name => $dept->id];
+        });
+
+        // Buat role
+        $superadminRole = Role::firstOrCreate(['name' => 'superadmin']);
+        $adminRole      = Role::firstOrCreate(['name' => 'administrator']);
+        $memberRole     = Role::firstOrCreate(['name' => 'member']);
+
+        // Assign semua permission hanya ke superadmin
+        $superadminRole->syncPermissions(Permission::all());
+
+        // Buat user-user dan assign role
+        $users = [
+            [
+                'nip' => '001',
+                'name' => 'Superadmin',
+                'email' => 'superadmin@csa.tes',
+                'role' => $superadminRole,
+                'department' => 'IT',
+            ],
+            [
+                'nip' => '002',
+                'name' => 'Administrator',
+                'email' => 'administrator@csa.tes',
+                'role' => $adminRole,
+                'department' => 'FAT',
+            ],
+            [
+                'nip' => '003',
+                'name' => 'Operator',
+                'email' => 'operator@csa.tes',
+                'role' => $memberRole,
+                'department' => 'HRGA',
+            ],
+            [
+                'nip' => '004',
+                'name' => 'Manager IT',
+                'email' => 'manager@csa.tes',
+                'role' => $memberRole,
+                'department' => 'IT',
+            ],
+        ];
+
+        foreach ($users as $userData) {
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']], // prevent duplication
+                [
+                    'company_id'     => $company->id,
+                    'department_id' => $departments[$userData['department']],
+                    'nip'            => $userData['nip'],
+                    'name'           => $userData['name'],
+                    'status'         => 'active',
+                    'password'       => Hash::make('123456789'),
+                ]
+            );
+            $user->assignRole($userData['role']);
+        }
     }
 }

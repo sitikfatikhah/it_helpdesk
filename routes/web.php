@@ -15,7 +15,7 @@
     Route::get('/reports/export/excel', [ReportController::class, 'exportExcel'])->name('reports.export.excel');
     Route::get('/login-custom', [CustomLoginController::class, 'showLogin']);
     Route::post('/submit-ticket', function (Request $request) {
-    
+
 
         return redirect('/app'); // redirect ke dashboard Laravel
     });

@@ -48,7 +48,7 @@ class UserImporter extends Importer
         ];
     }
 
-    
+
     public static function getCompletedNotificationBody(Import $import): string
     {
         $body = 'Your user import has completed and ' . number_format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';

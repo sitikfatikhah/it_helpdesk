@@ -2,23 +2,31 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Department;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Traits\HasRoles;
 
 class Ticket extends Model
 {
+    /**@use hasrole */
+    use HasRoles;
+
     use HasFactory;
 
-    protected $table='ticket';
+
+    protected $table='tickets';
 
     protected $fillable = [
         'user_id',
-        'department_id',
+        'department',
         'ticket_number',
         'date',
         'open_time',
-        'close_time',
+        // 'close_time',
         'priority_level',
         'category',
         'description',
@@ -33,7 +41,7 @@ class Ticket extends Model
     protected $casts = [
         'date' => 'date',
         'open_time' => 'datetime:H:i',
-        'close_time' => 'datetime:H:i',
+        // 'close_time' => 'datetime:H:i',
     ];
 
     protected static function boot()
@@ -43,7 +51,7 @@ class Ticket extends Model
         static::creating(function ($ticket) {
             $today = now()->format('Ymd'); // Format: 20250411
 
-            $countToday = DB::table('ticket')
+            $countToday = DB::table('tickets')
                 ->whereDate('created_at', now()->toDateString())
                 ->count();
 
@@ -63,5 +71,15 @@ class Ticket extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+     public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+
+
+
+
 
 }

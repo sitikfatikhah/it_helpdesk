@@ -15,11 +15,11 @@ class ReportFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'department_id' => Department::inRandomOrder()->first()->id,
+            'department' => Department::inRandomOrder()->first()->id,
             'ticket_number' => 'TCK-' . $this->faker->unique()->numerify('###'),
             'date' => $this->faker->date(),
             'open_time' => $this->faker->time(),
-            'close_time' => $this->faker->time(),
+            // 'close_time' => $this->faker->time(),
             'priority_level' => $this->faker->randomElement(['low', 'medium', 'high']),
             'category' => $this->faker->word(),
             'description' => $this->faker->paragraph(),

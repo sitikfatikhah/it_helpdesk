@@ -14,7 +14,7 @@ class Post extends Model
         'ticket_number',
         'date',
         'open_time',
-        'close_time',
+        // 'close_time',
         'priority_level',
         'category',
         'description',
