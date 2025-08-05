@@ -81,7 +81,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->resources([
                  \App\Filament\Resources\TicketResource::class,
-                    // \App\Filament\Resources\ReportResource::class,
+
                 ])
             ;
     }
