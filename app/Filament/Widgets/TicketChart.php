@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TicketChart extends ChartWidget
 {
@@ -19,6 +20,7 @@ class TicketChart extends ChartWidget
 
     public ?string $filter = 'year';
 
+
     protected function getFilters(): ?array
     {
         return [
@@ -28,6 +30,7 @@ class TicketChart extends ChartWidget
             'year' => 'This year',
         ];
     }
+
 
     protected function getData(): array
     {
@@ -57,6 +60,7 @@ class TicketChart extends ChartWidget
                 $dateFormat = '%Y-%m';
                 break;
         }
+
 
         // Query untuk mengambil data tiket, digabungkan berdasarkan tanggal dan level prioritas.
         $data = Ticket::query()
@@ -116,4 +120,10 @@ class TicketChart extends ChartWidget
     {
         return 'bar'; // Atau 'line', 'pie', dsb
     }
+
+    public static function canView(): bool
+    {
+        return Auth::user()->hasRole('super_admin');
+    }
+
 }

@@ -9,6 +9,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class Filters extends Widget implements HasForms
 {
@@ -21,6 +22,9 @@ class Filters extends Widget implements HasForms
     protected static ?int $sort = 1;
 
     public ?array $data = [];
+
+
+
 
     public function mount(): void
     {
@@ -39,6 +43,8 @@ class Filters extends Widget implements HasForms
             'from' => $this->data['from'],
             'to' => $this->data['to'],
         ]);
+
+
     }
 
     public function form(Form $form): Form
@@ -57,5 +63,9 @@ class Filters extends Widget implements HasForms
                             ->afterStateUpdated(fn () => $this->updatedData()),
                     ]),
             ]);
+    }
+    public static function canView(): bool
+    {
+        return Auth::user()->hasRole('super_admin');
     }
 }

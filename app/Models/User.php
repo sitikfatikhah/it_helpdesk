@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
 
 class User extends Authenticatable
 {
@@ -14,7 +15,9 @@ class User extends Authenticatable
     use HasRoles;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -65,13 +68,14 @@ class User extends Authenticatable
 
     public function department()
     {
-        return $this->belongsTo(Department::class, 'departement_id', 'id');
+        return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 
-    public function role()
+    public function roleRelation() // ⚡ ubah nama biar tidak bentrok dengan scope `role()`
     {
         return $this->belongsTo(Role::class);
     }
+
 
 
 }

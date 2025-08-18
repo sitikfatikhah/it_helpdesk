@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class StatsDashboard extends BaseWidget
 {
@@ -14,6 +15,19 @@ class StatsDashboard extends BaseWidget
 
     public ?string $from = null;
     public ?string $to = null;
+
+    public static function canView(): bool
+    {
+        $user = Auth::user();
+
+        // Super admin bisa melihat widget ini
+        if ($user->hasRole('super_admin')) {
+            return true;
+        }
+
+        // Pengguna biasa hanya bisa melihat jika mereka punya tiket
+        return Ticket::where('user_id', $user->id)->exists();
+    }
 
     protected function getListeners(): array
     {
@@ -34,7 +48,13 @@ class StatsDashboard extends BaseWidget
 
     protected function getStats(): array
     {
+        $user = Auth::user();
         $query = Ticket::query();
+
+        // Jika pengguna BUKAN super_admin, filter tiket sesuai user_id yang login.
+        if (!$user->hasRole('super_admin')) {
+            $query->where('user_id', $user->id);
+        }
 
         if ($this->from) {
             $query->whereDate('created_at', '>=', $this->from);
@@ -48,7 +68,7 @@ class StatsDashboard extends BaseWidget
 
         $onProgress = (clone $query)->where('ticket_status', 'on_progress')->count();
         $solved = (clone $query)->where('ticket_status', 'solved')->count();
-        $callback = (clone $query)->where('ticket_status', 'callback')->count();
+        $callback = (clone $query)->whereIn('ticket_status', ['callback', 'monitored', 'other'])->count();
 
         return [
             Stat::make('Total Tickets', "{$total} Ticket"),
@@ -60,8 +80,8 @@ class StatsDashboard extends BaseWidget
                 ->description('Tickets solved')
                 ->icon('heroicon-o-check')
                 ->color('info'),
-            Stat::make('Callback', $callback)
-                ->description('Tickets callback')
+            Stat::make('Callback / Monitored / Other', $callback)
+                ->description('Tickets Callback / Monitored / Other')
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning'),
         ];

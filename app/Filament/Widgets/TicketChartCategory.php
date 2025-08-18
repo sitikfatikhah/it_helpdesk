@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TicketChartCategory extends ChartWidget
 {
@@ -113,5 +114,9 @@ class TicketChartCategory extends ChartWidget
     protected function getType(): string
     {
         return 'bar'; // Bisa diganti dengan 'line', 'pie', dll.
+    }
+    public static function canView(): bool
+    {
+        return Auth::user()->hasRole('super_admin');
     }
 }

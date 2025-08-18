@@ -6,7 +6,6 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Models\Company;
-use App\Models\Department;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,8 +19,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Imports\UserImporter;
 use Filament\Tables\Actions\ImportAction;
-use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-
 
 
 class UserResource extends Resource implements HasShieldPermissions
@@ -51,51 +48,52 @@ class UserResource extends Resource implements HasShieldPermissions
                 Forms\Components\Select::make('company_id')
                     ->relationship('company', 'company_id')
                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->company}")
-                    // ->multiple()
                     ->label('Company')
                     ->preload()
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->default(fn () => env('APP_DEBUG') ? 1 : null), // Auto-fill jika DEBUG
                 Forms\Components\TextInput::make('nip')
                     ->required()
                     ->maxLength(255)
-                    ->unique(table: User::class, column: 'nip', ignoreRecord: true),
+                    ->unique(table: User::class, column: 'nip', ignoreRecord: true)
+                    ->default(fn () => env('APP_DEBUG') ? 12345 : null), // Auto-fill jika DEBUG
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->default(fn () => env('APP_DEBUG') ? 'Tester' : null), // Auto-fill jika DEBUG
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                // Forms\Components\Select::make('department')
-                //     ->relationship('department', 'name')
-                //     // ->getOptionLabelFromRecordUsing(fn($record) => "{$record->id} - {$record->name}")
-                //     // ->multiple()
-                //     ->preload()
-                //     ->searchable()
-                //     ->required(),
+                    ->unique(ignoreRecord: true)
+                    ->default(fn () => env('APP_DEBUG') ? 'tester@example.com' : null), // Auto-fill jika DEBUG
+                Forms\Components\Select::make('department_id')
+                    ->relationship('department', 'name')
+                    ->preload()
+                    ->searchable()
+                    ->required()
+                    ->default(fn () => env('APP_DEBUG') ? 1 : null), // Auto-fill jika DEBUG
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->options([
                         'active' => 'Active',
                         'inactive' => 'Inactive',
-                        ])
-                        ->default('Active')
-                        ->required(),
-                        // Forms\Components\DateTimePicker::make('email_verified_at'),
-                        Forms\Components\TextInput::make('password')
-                            ->password()
-                            ->required()
-                            ->maxLength(255),
-
-                // Role dengan Laravel Shield (Spatie)
+                    ])
+                    ->default(fn () => env('APP_DEBUG') ? 'active' : 'active')
+                    ->required(),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->maxLength(255)
+                    ->default(fn () => env('APP_DEBUG') ? 'password' : null), // Auto-fill jika DEBUG
                 Forms\Components\Select::make('role')
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload()
                     ->searchable()
-                    ->label('Roles'),
+                    ->label('Roles')
+                    ->default(fn () => env('APP_DEBUG') ? [1] : null), // Auto-fill jika DEBUG
 
                 // Using CheckboxList Component
                 // Forms\Components\CheckboxList::make('roles')

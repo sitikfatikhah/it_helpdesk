@@ -22,7 +22,8 @@ use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TimePicker;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Enums\FiltersLayout as FiltersLayout;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class TicketResource extends Resource
@@ -55,14 +56,14 @@ class TicketResource extends Resource
                 ->afterStateUpdated(fn ($state, callable $set) =>
                     $set('department_id', \App\Models\User::find($state)?->department_id)
                 )
-                ->disabled(fn () => !auth()->user()->hasRole('superadmin')) // ❌ selain superadmin: tidak bisa ubah
+                ->disabled(fn () => !auth()->user()->hasRole('super_admin')) // ❌ selain super_admin: tidak bisa ubah
                 ->dehydrated(true)
                 ->required(),
 
             Forms\Components\Select::make('department_id')
                 ->default(Auth::user()->department_id)
                 ->label('Department')
-                ->options(fn () => Department::all()>pluck('name')->toArray())
+                ->options(fn () => Department::all()->pluck('name')->toArray())
                 ->disabled()
                 ->dehydrated(true)
                 ->required(),
@@ -106,7 +107,7 @@ class TicketResource extends Resource
                     'printer' => 'Printer',
                     'other' => 'Other',
                 ])
-                ->visible(fn () => auth()->user()->hasRole('superadmin'))
+                ->visible(fn () => auth()->user()->hasRole('super_admin'))
                 ->grouped()
                 ->nullable(),
 
@@ -117,17 +118,17 @@ class TicketResource extends Resource
                     'linux' => 'Linux',
                     'other' => 'Other',
                 ])
-                ->visible(fn () => auth()->user()->hasRole('superadmin'))
+                ->visible(fn () => auth()->user()->hasRole('super_admin'))
                 ->grouped()
                 ->nullable(),
 
             Forms\Components\TextInput::make('software_or_application')
-                ->visible(fn () => auth()->user()->hasRole('superadmin'))
+                ->visible(fn () => auth()->user()->hasRole('super_admin'))
                 ->default('-')
                 ->dehydrated(true),
 
             Forms\Components\TextInput::make('error_message')
-                ->visible(fn () => auth()->user()->hasRole('superadmin'))
+                ->visible(fn () => auth()->user()->hasRole('super_admin'))
                 ->nullable(),
 
             Forms\Components\Textarea::make('description')
@@ -135,7 +136,7 @@ class TicketResource extends Resource
                 ->required(),
 
             Forms\Components\Textarea::make('step_taken')
-                ->visible(fn () => auth()->user()->hasRole('superadmin'))
+                ->visible(fn () => auth()->user()->hasRole('super_admin'))
                 ->columnSpanFull(),
 
             Forms\Components\ToggleButtons::make('priority_level')
@@ -147,7 +148,7 @@ class TicketResource extends Resource
                 ->default('low')
                 ->grouped()
                 ->nullable()
-                ->disabled(fn () => !Auth::user()?->hasRole('superadmin')),
+                ->disabled(fn () => !Auth::user()?->hasRole('super_admin')),
 
             Forms\Components\Select::make('ticket_status')
                 ->label('Status')
@@ -159,7 +160,7 @@ class TicketResource extends Resource
                     'other' => 'Other',
                 ])
                 ->default('on_progress')
-                ->disabled(fn () => !Auth::user()?->hasRole('superadmin'))
+                ->disabled(fn () => !Auth::user()?->hasRole('super_admin'))
                 ->nullable(),
         ]);
     }
@@ -167,7 +168,16 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
+        ->modifyQueryUsing(function (Builder $query) {
+                // Mendapatkan user yang sedang login
+                $user = Auth::user();
+
+                // Jika user BUKAN super_admin, filter tiket sesuai user_id yang login
+                if (!$user->hasRole('super_admin')) {
+                    $query->where('user_id', $user->id);
+                }
+            })
+        ->columns([
                 Tables\Columns\TextColumn::make('user.name')->label('User'),
                 Tables\Columns\TextColumn::make('ticket_number')->searchable(),
                 Tables\Columns\TextColumn::make('date')->date()->sortable(),
@@ -227,7 +237,6 @@ class TicketResource extends Resource
                 ],
                 layout: FiltersLayout::AboveContent
             )
-
             ->actions([
                 Action::make('updateStatus')
                     ->label('Update Status')
@@ -246,7 +255,7 @@ class TicketResource extends Resource
                     ])
                     ->modalHeading('Update Ticket Status')
                     ->icon('heroicon-m-arrow-path')
-                    ->visible(fn () => auth()->user()->hasRole('superadmin')),
+                    ->visible(fn () => auth()->user()->hasRole('super_admin')),
 
                 Tables\Actions\EditAction::make()->label('Edit')->button(),
             ])
@@ -265,14 +274,29 @@ class TicketResource extends Resource
     public static function getPages(): array
     {
         return [
+            'create' => Pages\CreateTicket::route('/create'),
             'index' => Pages\ManageTickets::route('/'),
+            // 'edit' => Pages\EditTicket::route('/{record}/edit'),
+            'view' => Pages\ViewTicket::route('/{record}'),
         ];
     }
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        $user = Auth::user();
+
+        if($user ->hasRole('super_admin')){
+            return Ticket::count();
+        }
+
+        return Ticket::where('user_id', $user->id )->count();
     }
+
+    protected function getRedirectUrl(): string
+    {
+    return TicketResource::getUrl('index');
+    }
+
 
 
 }

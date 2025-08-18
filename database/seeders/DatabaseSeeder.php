@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
                 ['email' => $userData['email']], // prevent duplication
                 [
                     'company_id'     => $company->id,
-                    'department_id' => $departments[$userData['department']],
+                    // 'department_id' => $departments[$userData['department']],
                     'nip'            => $userData['nip'],
                     'name'           => $userData['name'],
                     'status'         => 'active',
