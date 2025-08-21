@@ -29,7 +29,7 @@ class LoginCustom extends Login
     protected function getLoginFormComponent(): Component
     {
         return TextInput::make('login')
-            ->label(_('NIP / Email'))
+            ->label(__('NIP / Email'))
             ->required()
             ->autocomplete()
             ->autofocus()

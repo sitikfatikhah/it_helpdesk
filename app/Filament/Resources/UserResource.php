@@ -51,54 +51,51 @@ class UserResource extends Resource implements HasShieldPermissions
                     ->label('Company')
                     ->preload()
                     ->searchable()
-                    ->required()
-                    ->default(fn () => env('APP_DEBUG') ? 1 : null), // Auto-fill jika DEBUG
+                    ->required(),
+                    // ->default(fn () => env('APP_DEBUG') ? 1 : null), // Auto-fill jika DEBUG
                 Forms\Components\TextInput::make('nip')
                     ->required()
                     ->maxLength(255)
-                    ->unique(table: User::class, column: 'nip', ignoreRecord: true)
-                    ->default(fn () => env('APP_DEBUG') ? 12345 : null), // Auto-fill jika DEBUG
+                    ->unique(table: User::class, column: 'nip', ignoreRecord: true),
+                    // ->default(fn () => env('APP_DEBUG') ? 12345 : null), // Auto-fill jika DEBUG
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255)
-                    ->default(fn () => env('APP_DEBUG') ? 'Tester' : null), // Auto-fill jika DEBUG
+                    ->maxLength(255),
+                    // ->default(fn () => env('APP_DEBUG') ? 'Tester' : null), // Auto-fill jika DEBUG
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->required()
+                    ->nullable()
                     ->maxLength(255)
-                    ->unique(ignoreRecord: true)
-                    ->default(fn () => env('APP_DEBUG') ? 'tester@example.com' : null), // Auto-fill jika DEBUG
+                    ->unique(ignoreRecord: true),
+                    // ->default(fn () => env('APP_DEBUG') ? 'tester@example.com' : null), // Auto-fill jika DEBUG
                 Forms\Components\Select::make('department_id')
                     ->relationship('department', 'name')
                     ->preload()
                     ->searchable()
-                    ->required()
-                    ->default(fn () => env('APP_DEBUG') ? 1 : null), // Auto-fill jika DEBUG
+                    ->required(),
+                    // ->default(fn () => env('APP_DEBUG') ? 1 : null), // Auto-fill jika DEBUG
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->options([
                         'active' => 'Active',
                         'inactive' => 'Inactive',
                     ])
-                    ->default(fn () => env('APP_DEBUG') ? 'active' : 'active')
+                    // ->default(fn () => env('APP_DEBUG') ? 'active' : 'active')
                     ->required(),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
-                    ->maxLength(255)
-                    ->default(fn () => env('APP_DEBUG') ? 'password' : null), // Auto-fill jika DEBUG
+                    ->revealable()
+                    ->maxLength(255),
+                    // ->default(fn () => env('APP_DEBUG') ? 'password' : null), // Auto-fill jika DEBUG
                 Forms\Components\Select::make('role')
                     ->relationship('roles', 'name')
-                    ->multiple()
+                    // ->multiple()
                     ->preload()
                     ->searchable()
-                    ->label('Roles')
-                    ->default(fn () => env('APP_DEBUG') ? [1] : null), // Auto-fill jika DEBUG
+                    ->label('Roles'),
+                    // ->default(fn () => env('APP_DEBUG') ? [1] : null), // Auto-fill jika DEBUG
 
-                // Using CheckboxList Component
-                // Forms\Components\CheckboxList::make('roles')
-                //     ->relationship('roles', 'name')
-                //     ->searchable(),
              ]);
     }
 

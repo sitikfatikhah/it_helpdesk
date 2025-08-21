@@ -49,7 +49,7 @@ class DepartmentResource extends Resource implements HasShieldPermissions
                 ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nip} - {$record->name}")
                 ->searchable()
                 ->preload()
-                ->required(),
+                ->nullable(),
         ]);
     }
 

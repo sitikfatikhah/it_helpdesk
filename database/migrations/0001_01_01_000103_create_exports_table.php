@@ -39,10 +39,10 @@ return new class extends Migration
 
     public function down(): void
     {
-        // Hapus foreign key terlebih dahulu
-        Schema::table('report', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-        });
+        // // Hapus foreign key terlebih dahulu
+        // Schema::table('report', function (Blueprint $table) {
+        //     $table->dropForeign(['user_id']);
+        // });
 
         Schema::dropIfExists('exports');
 

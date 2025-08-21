@@ -15,11 +15,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade')->nullable();
+            $table->foreignId('department_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('nip')->unique(); // Bisa menyimpan NIP dengan nol di depan
             $table->string('name');
             $table->string('email')->unique();
             $table->string('status');
+            $table->string('role')->nullable();
             $table->string('password');
             $table->rememberToken(); // Token untuk "remember me"
             $table->timestamps();
